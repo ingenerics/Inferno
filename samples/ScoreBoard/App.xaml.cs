@@ -1,9 +1,4 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Configuration;
-using System.Data;
-using System.Linq;
-using System.Threading.Tasks;
+﻿using ScoreBoard.Bootstrap;
 using System.Windows;
 
 namespace ScoreBoard
@@ -13,5 +8,9 @@ namespace ScoreBoard
     /// </summary>
     public partial class App : Application
     {
+        public App()
+        {
+            new AppBootstrapper(this);
+        }
     }
 }
