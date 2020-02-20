@@ -12,6 +12,10 @@
 
   <ItemGroup>
     <ProjectReference Include="..\..\src\Inferno.Core\Inferno.Core.csproj" />
+    <ProjectReference Include="..\..\src\Inferno.LifeCycle\Inferno.LifeCycle.csproj" />
+    <ProjectReference Include="..\..\src\Inferno.Reactive\Inferno.Reactive.csproj" />
+    <ProjectReference Include="..\..\src\Inferno.Wpf.Shared\Inferno.Wpf.Shared.csproj" />
+    <ProjectReference Include="..\..\src\Inferno.Wpf\Inferno.Wpf.csproj" />
   </ItemGroup>
 
 </Project>

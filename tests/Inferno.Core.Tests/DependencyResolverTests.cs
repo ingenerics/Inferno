@@ -1,6 +1,6 @@
 using Inferno.Core.Logging;
-using Inferno.Core.Tests.Views;
-using System.Windows;
+using System.Collections;
+using System.Collections.Generic;
 using Xunit;
 
 namespace Inferno.Core.Tests
@@ -29,30 +29,28 @@ namespace Inferno.Core.Tests
             Assert.NotNull(collection);
         }
 
-        [StaFact]
+        [Fact]
         public void DependencyResolver_Instance_Transient_Generic_Test()
         {
             // Arrange
             var dependencyResolver = new FakeDependencyResolverCore();
-            dependencyResolver.RegisterTransient<UIElement>(() => new ShellView());
+            dependencyResolver.RegisterTransient<IList>(() => new List<int>());
             // Act
-            var view = dependencyResolver.GetInstance<UIElement>();
+            var list = dependencyResolver.GetInstance<IList>();
             // Assert
-            Assert.NotNull(view);
-            Assert.IsType<ShellView>(view);
+            Assert.NotNull(list);
         }
 
-        [StaFact]
+        [Fact]
         public void DependencyResolver_Instance_Transient_Type_Test()
         {
             // Arrange
             var dependencyResolver = new FakeDependencyResolverCore();
-            dependencyResolver.RegisterTransient<UIElement>(() => new ShellView());
+            dependencyResolver.RegisterTransient<IList>(() => new List<int>());
             // Act
-            var view = dependencyResolver.GetInstance(typeof(UIElement));
+            var list = dependencyResolver.GetInstance(typeof(IList));
             // Assert
-            Assert.NotNull(view);
-            Assert.IsType<ShellView>(view);
+            Assert.NotNull(list);
         }
     }
 }

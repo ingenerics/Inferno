@@ -1,7 +1,9 @@
-﻿using SimpleInjector;
-using System.Windows;
+﻿using Inferno;
 using Inferno.Core;
 using Inferno.Core.Logging;
+using SimpleInjector;
+using System.Reactive.Concurrency;
+using System.Windows;
 
 namespace ScoreBoard.Bootstrap
 {
@@ -27,14 +29,13 @@ namespace ScoreBoard.Bootstrap
             container.Register<ILogger, DebugLogger>(Lifestyle.Singleton);
             container.Register<IViewLocator, ViewLocator>(Lifestyle.Singleton);
             container.Register<IViewModelBinder, ViewModelBinder>(Lifestyle.Singleton);
+            container.Collection.Register<ICreatesObservableForProperty>(new INPCObservableForProperty(), new IROObservableForProperty(), new POCOObservableForProperty(), new DependencyObjectObservableForProperty());
             container.RegisterInstance<IDependencyResolver>(dependencyResolver); // Used by IViewLocator to resolve views
             //    Components that are not covered by unit tests
             container.RegisterInstance(_application);
             container.Register<IWindowManager, WindowManager>(Lifestyle.Singleton);
 
-            // 4. Initialize reactive components
-
-            // 5. Verify your configuration (optional)
+            // 4. Verify your configuration (optional)
             container.Verify();
 
             return dependencyResolver;
@@ -42,6 +43,8 @@ namespace ScoreBoard.Bootstrap
 
         protected override void OnStartup(object sender, StartupEventArgs e)
         {
+            RxApp.Initialize(DependencyResolver, DispatcherScheduler.Current);
+
             DisplayRootViewFor<ShellViewModel>();
         }
 

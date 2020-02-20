@@ -1,7 +1,15 @@
-﻿namespace ScoreBoard
+﻿using Inferno;
+using ScoreBoard.ViewModels;
+
+namespace ScoreBoard
 {
-    public class ShellViewModel
+    public class ShellViewModel : ReactiveObject
     {
-        public int Score => 7;
+        public ShellViewModel()
+        {
+            ScoreBoardViewModel = new ScoreBoardViewModel();
+        }
+
+        public ScoreBoardViewModel ScoreBoardViewModel { get; set; }
     }
 }

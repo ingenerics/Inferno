@@ -1,26 +1,13 @@
-﻿<Window x:Class="ScoreBoard.ShellView"
-        xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
-        xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
-        xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
-        xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
-        xmlns:local="clr-namespace:ScoreBoard"
-        mc:Ignorable="d" WindowStartupLocation="CenterScreen"
-        Title="Inferno" Height="450" Width="800">
-    <DockPanel LastChildFill="True" Background="#FF024D70">
-        <StackPanel DockPanel.Dock="Bottom" 
-                    Orientation="Horizontal" HorizontalAlignment="Center">
-            <Button x:Name="DecrBtn" Height="70" Width="70" 
-                    VerticalAlignment="Bottom" Opacity="0.5" Margin="20">
-                <TextBlock Text="-" FontSize="36" Height="60" />
-            </Button>
-            <Button x:Name="IncrBtn" Height="70" Width="70"
-                    VerticalAlignment="Bottom" Opacity="0.5" Margin="20">
-                <TextBlock Text="+" FontSize="36" Height="60" />
-            </Button>
-        </StackPanel>
-        <Viewbox>
-            <Label x:Name="ScoreLabel" Content="{Binding Score}"
-                   ContentStringFormat="D2" FontFamily="Lucida Console" />
-        </Viewbox>
-    </DockPanel>
-</Window>
+﻿<inferno:RxWindow
+    x:Class="ScoreBoard.ShellView"
+    x:TypeArguments="local:ShellViewModel" 
+    xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+    xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+    xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+    xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+    xmlns:inferno="clr-namespace:Inferno;assembly=Inferno.Wpf"
+    xmlns:local="clr-namespace:ScoreBoard"
+    mc:Ignorable="d" WindowStartupLocation="CenterScreen"
+    d:DesignHeight="300" d:DesignWidth="300">
+    <inferno:CompositionControl ViewModel="{Binding ScoreBoardViewModel}" />
+</inferno:RxWindow>

@@ -9,16 +9,18 @@ namespace Inferno.Core.Logging
     {
         public readonly LoggingEventType Severity;
         public readonly string Message;
+        public readonly string Classifier;
         public readonly Exception Exception;
 
-        public LogEntry(LoggingEventType severity, string message, Exception exception = null)
+        public LogEntry(LoggingEventType severity, string message, string classifier = null, Exception exception = null)
         {
             if (message == null) throw new ArgumentNullException(nameof(message));
             if (message == string.Empty) throw new ArgumentException(nameof(string.Empty), nameof(message));
 
-            this.Severity = severity;
-            this.Message = message;
-            this.Exception = exception;
+            Severity = severity;
+            Message = message;
+            Classifier = classifier;
+            Exception = exception;
         }
     }
 }

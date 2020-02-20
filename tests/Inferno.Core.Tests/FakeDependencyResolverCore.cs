@@ -16,10 +16,7 @@ namespace Inferno.Core.Tests
 
             var logger = new DebugLogger();
             var callingAssembly = Assembly.GetCallingAssembly();
-            var assemblySource = new AssemblySource(callingAssembly);
             _container.Add(typeof(ILogger), logger);
-            _container.Add(typeof(IViewLocator), new ViewLocator(this, assemblySource, logger));
-            _container.Add(typeof(IViewModelBinder), new ViewModelBinder(logger));
         }
 
         public void RegisterTransient<TService>(Func<TService> instanceFactory)

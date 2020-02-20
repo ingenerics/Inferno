@@ -1,11 +1,11 @@
-﻿using System.Windows;
+﻿using Inferno;
 
 namespace ScoreBoard
 {
     /// <summary>
     /// Interaction logic for ShellView.xaml
     /// </summary>
-    public partial class ShellView : Window
+    public partial class ShellView : RxWindow<ShellViewModel>
     {
         public ShellView()
         {
