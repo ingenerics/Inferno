@@ -27,12 +27,12 @@ namespace Inferno.Wpf.Tests
 
         private void InitializeReactiveComponents()
         {
-            //RegisterSingleton<ICommandBinderImplementation>(new CommandBinderImplementation());
+            RegisterSingleton<ICommandBinderImplementation>(new CommandBinderImplementation());
             RegisterSingletons<ICreatesObservableForProperty>(new INPCObservableForProperty(), new IROObservableForProperty(), new POCOObservableForProperty(), new DependencyObjectObservableForProperty());
-            RegisterSingletons<ICreatesCommandBinding>(new CreatesCommandBindingViaEvent()/*, new CreatesCommandBindingViaCommandParameter()*/);
-            RegisterSingletons<IBindingTypeConverter>(/*new EqualityTypeConverter(), new StringConverter(),*/ new ComponentModelTypeConverter(), new BooleanToVisibilityTypeConverter());
+            RegisterSingletons<ICreatesCommandBinding>(new CreatesCommandBindingViaEvent(), new CreatesCommandBindingViaCommandParameter());
+            RegisterSingletons<IBindingTypeConverter>(new EqualityTypeConverter(), new StringConverter(), new ComponentModelTypeConverter(), new BooleanToVisibilityTypeConverter());
             RegisterSingletons<ISetMethodBindingConverter>(new NullSetMethodBindingConverter());
-            RegisterSingletons<IPropertyBindingHook>(new AutoDataTemplateBindingHook());
+            RegisterSingletons<IPropertyBindingHook>(new NullObjectBindingHook());
             //RegisterSingletons<ISinkForViewFetcher>(new SinkForLoadedViewFetcher(), new SinkForActivatedViewFetcher(new SinkForLoadedViewFetcher()));
         }
 

@@ -13,7 +13,7 @@ namespace Inferno
     public interface IHandleObservableErrors
     {
         /// <summary>
-        /// Gets a observable which will fire whenever an exception would normally terminate ReactiveUI
+        /// Gets a observable which will fire whenever an exception would normally terminate the application
         /// internal state.
         /// </summary>
         IObservable<Exception> ThrownExceptions { get; }

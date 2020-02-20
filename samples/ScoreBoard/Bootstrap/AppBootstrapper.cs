@@ -29,7 +29,12 @@ namespace ScoreBoard.Bootstrap
             container.Register<ILogger, DebugLogger>(Lifestyle.Singleton);
             container.Register<IViewLocator, ViewLocator>(Lifestyle.Singleton);
             container.Register<IViewModelBinder, ViewModelBinder>(Lifestyle.Singleton);
+            container.Register<ICommandBinderImplementation, CommandBinderImplementation>(Lifestyle.Singleton);
             container.Collection.Register<ICreatesObservableForProperty>(new INPCObservableForProperty(), new IROObservableForProperty(), new POCOObservableForProperty(), new DependencyObjectObservableForProperty());
+            container.Collection.Register<ICreatesCommandBinding>(new CreatesCommandBindingViaEvent(), new CreatesCommandBindingViaCommandParameter());
+            container.Collection.Register<IBindingTypeConverter>(new EqualityTypeConverter(), new StringConverter(), new ComponentModelTypeConverter(), new BooleanToVisibilityTypeConverter());
+            container.Collection.Register<ISetMethodBindingConverter>(new NullSetMethodBindingConverter());
+            container.Collection.Register<IPropertyBindingHook>(new NullObjectBindingHook());
             container.RegisterInstance<IDependencyResolver>(dependencyResolver); // Used by IViewLocator to resolve views
             //    Components that are not covered by unit tests
             container.RegisterInstance(_application);

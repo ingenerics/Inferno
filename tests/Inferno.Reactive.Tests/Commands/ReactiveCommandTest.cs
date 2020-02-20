@@ -14,11 +14,6 @@ using Xunit;
 
 namespace Inferno.Reactive.Tests
 {
-    /*
-     * Note these tests will fail if run in debug mode,
-     * because of the exceptions that are being raised.
-     * Simply don't run them in debug mode, rather just "Run all tests".
-     */
     public class ReactiveCommandTest
     {
         public ReactiveCommandTest()

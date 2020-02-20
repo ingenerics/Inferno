@@ -10,6 +10,10 @@ namespace ScoreBoard
         public ShellView()
         {
             InitializeComponent();
+
+            this.OneWayBind(ViewModel,
+                viewModel => viewModel.ScoreBoardViewModel,
+                view => view.Host.ViewModel);
         }
     }
 }

@@ -24,9 +24,12 @@ namespace Inferno.Reactive.Tests
 
         private void InitializeReactiveComponents()
         {
-            RegisterSingletons<ICreatesObservableForProperty>(new INPCObservableForProperty(), new IROObservableForProperty(), new POCOObservableForProperty());
-            RegisterSingletons<ICreatesCommandBinding>(new CreatesCommandBindingViaEvent());
+            RegisterSingleton<ICommandBinderImplementation>(new CommandBinderImplementation());
+            RegisterSingletons<ICreatesObservableForProperty>(new INPCObservableForProperty(), new IROObservableForProperty(), new POCOObservableForProperty(), new DependencyObjectObservableForProperty());
+            RegisterSingletons<ICreatesCommandBinding>(new CreatesCommandBindingViaEvent(), new CreatesCommandBindingViaCommandParameter());
+            RegisterSingletons<IBindingTypeConverter>(new EqualityTypeConverter(), new StringConverter(), new ComponentModelTypeConverter(), new BooleanToVisibilityTypeConverter());
             RegisterSingletons<ISetMethodBindingConverter>(new NullSetMethodBindingConverter());
+            RegisterSingletons<IPropertyBindingHook>(new NullObjectBindingHook());
         }
 
         public void RegisterSingleton<TService>(TService instance)

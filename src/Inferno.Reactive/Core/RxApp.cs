@@ -2,6 +2,7 @@
 using Inferno.Core.Logging;
 using System;
 using System.Diagnostics;
+using System.Linq;
 using System.Reactive;
 using System.Reactive.Concurrency;
 
@@ -121,6 +122,17 @@ namespace Inferno
 
             var observableForPropertyFactories = _dependencyResolver.GetAllInstances<ICreatesObservableForProperty>();
             ReactiveNotifyPropertyChangedExtensions.Initialize(observableForPropertyFactories);
+
+            var commandBinderImplementation = _dependencyResolver.GetInstance<ICommandBinderImplementation>();
+            CommandBinder.Initialize(commandBinderImplementation);
+
+            var commandBindingFactories = _dependencyResolver.GetAllInstances<ICreatesCommandBinding>();
+            CreatesCommandBinding.Initialize(commandBindingFactories);
+
+            var bindingTypeConverters = _dependencyResolver.GetAllInstances(typeof(IBindingTypeConverter)).OfType<IBindingTypeConverter>();
+            var setMethodBindingConverters = _dependencyResolver.GetAllInstances(typeof(ISetMethodBindingConverter)).OfType<ISetMethodBindingConverter>();
+            var propertyBindingHooks = _dependencyResolver.GetAllInstances(typeof(IPropertyBindingHook)).OfType<IPropertyBindingHook>();
+            PropertyBinderImplementation.Initialize(bindingTypeConverters, setMethodBindingConverters, propertyBindingHooks);
 
             #endregion Configuration of static classes and shared state
         }

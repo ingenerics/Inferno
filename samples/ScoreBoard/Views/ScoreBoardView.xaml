@@ -11,17 +11,19 @@
     d:DesignHeight="300" d:DesignWidth="300">
     <DockPanel LastChildFill="True" Background="#FF798C8C">
         <Button x:Name="NewBtn" DockPanel.Dock="Bottom"
-                Height="70" Width="120" Margin="10"
-                Command="{Binding NewGameCommand}">
+                Height="70" Width="120" Margin="10">
             <TextBlock Text="New Game" FontSize="18"></TextBlock>
         </Button>
         <Grid>
+            <Grid.RowDefinitions>
+                <RowDefinition />
+            </Grid.RowDefinitions>
             <Grid.ColumnDefinitions>
                 <ColumnDefinition />
                 <ColumnDefinition />
             </Grid.ColumnDefinitions>
-            <inferno:CompositionControl Grid.Column="0" ViewModel="{Binding ScoreHomeTeam}" />
-            <inferno:CompositionControl Grid.Column="1" ViewModel="{Binding ScoreVisitors}" />
+            <inferno:CompositionControl x:Name="scoreHomeTeam" Grid.Column="0" />
+            <inferno:CompositionControl x:Name="scoreVisitors" Grid.Column="1" />
         </Grid>
     </DockPanel>
 </inferno:RxUserControl>

@@ -146,7 +146,7 @@ namespace Inferno
         public bool IsSubscribed => _activated > 0;
 
         /// <summary>
-        /// Gets an observable which signals whenever an exception would normally terminate ReactiveUI
+        /// Gets an observable which signals whenever an exception would normally terminate the application
         /// internal state.
         /// </summary>
         public IObservable<Exception> ThrownExceptions => _thrownExceptions.Value;

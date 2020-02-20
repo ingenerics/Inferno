@@ -9,5 +9,5 @@
     xmlns:local="clr-namespace:ScoreBoard"
     mc:Ignorable="d" WindowStartupLocation="CenterScreen"
     d:DesignHeight="300" d:DesignWidth="300">
-    <inferno:CompositionControl ViewModel="{Binding ScoreBoardViewModel}" />
+    <inferno:CompositionControl x:Name="Host" />
 </inferno:RxWindow>

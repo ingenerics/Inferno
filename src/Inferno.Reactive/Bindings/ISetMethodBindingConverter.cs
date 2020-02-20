@@ -3,7 +3,7 @@
 namespace Inferno
 {
     /// <summary>
-    /// This converter will allow users to change the way the set functionality is performed in Inferno property binding.
+    /// This converter will allow users to change the way the set functionality is performed in property binding.
     /// </summary>
     public interface ISetMethodBindingConverter
     {
