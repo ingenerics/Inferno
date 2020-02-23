@@ -3,6 +3,8 @@ using System;
 using System.Collections.Generic;
 using System.ComponentModel;
 using System.Linq;
+using System.Reactive;
+using System.Reactive.Linq;
 using System.Threading;
 using System.Threading.Tasks;
 using System.Windows;
@@ -15,15 +17,15 @@ namespace Inferno
     /// </summary>
     public class WindowManager : IWindowManager
     {
-        private readonly Application _application;
-        private readonly IViewLocator _viewLocator;
-        private readonly IViewModelBinder _viewModelBinder;
+        protected readonly Application Application;
+        protected readonly IViewLocator ViewLocator;
+        protected readonly IViewModelBinder ViewModelBinder;
 
         public WindowManager(Application application, IViewLocator viewLocator, IViewModelBinder viewModelBinder)
         {
-            _application = application;
-            _viewLocator = viewLocator;
-            _viewModelBinder = viewModelBinder;
+            Application = application;
+            ViewLocator = viewLocator;
+            ViewModelBinder = viewModelBinder;
         }
 
         /// <summary>
@@ -63,8 +65,8 @@ namespace Inferno
         /// <returns>The window.</returns>
         protected virtual async Task<Window> CreateWindowAsync(object rootModel, bool isDialog, object context, IDictionary<string, object> settings)
         {
-            var view = EnsureWindow(rootModel, _viewLocator.LocateForModel(rootModel, context), isDialog);
-            _viewModelBinder.Bind(rootModel, view);
+            var view = EnsureWindow(rootModel, ViewLocator.LocateForModel(rootModel, context), isDialog);
+            ViewModelBinder.Bind(rootModel, view);
 
             if (string.IsNullOrEmpty(view.Title) && rootModel is IHaveDisplayName)
             {
@@ -90,7 +92,6 @@ namespace Inferno
         /// <returns>The window.</returns>
         protected virtual Window EnsureWindow(object model, object view, bool isDialog)
         {
-
             if (view is Window window)
             {
                 var owner = InferOwnerOf(window);
@@ -129,13 +130,13 @@ namespace Inferno
         /// <returns>The owner.</returns>
         protected virtual Window InferOwnerOf(Window window)
         {
-            if (_application == null)
+            if (Application == null)
             {
                 return null;
             }
 
-            var active = _application.Windows.OfType<Window>().FirstOrDefault(x => x.IsActive);
-            active = active ?? (PresentationSource.FromVisual(_application.MainWindow) == null ? null : _application.MainWindow);
+            var active = Application.Windows.OfType<Window>().FirstOrDefault(x => x.IsActive);
+            active = active ?? (PresentationSource.FromVisual(Application.MainWindow) == null ? null : Application.MainWindow);
             return active == window ? null : active;
         }
 
@@ -181,9 +182,11 @@ namespace Inferno
                 if (_model is IActivate activatable)
                 {
                     await activatable.ActivateAsync(CancellationToken.None);
-
                     _view.Closed += Closed;
-                    activatable.Deactivated += Deactivated;
+                    activatable.Activator.AddDisposable(
+                        activatable.Activator.Deactivated
+                        .Select(Deactivated)
+                        .Subscribe());
                 }
 
                 if (_model is IGuardClose guard)
@@ -209,18 +212,16 @@ namespace Inferno
                 _deactivatingFromView = false;
             }
 
-            private void Deactivated(object sender, DeactivationEventArgs e)
+            private Unit Deactivated(bool wasClosed)
             {
-                if (!e.WasClosed)
+                if (!wasClosed)
                 {
-                    return;
+                    return Unit.Default;
                 }
-
-                ((IActivate)_model).Deactivated -= Deactivated;
 
                 if (_deactivatingFromView)
                 {
-                    return;
+                    return Unit.Default;
                 }
 
                 _deactivateFromViewModel = true;
@@ -228,6 +229,8 @@ namespace Inferno
                 _view.Close();
                 _actuallyClosing = false;
                 _deactivateFromViewModel = false;
+
+                return Unit.Default;
             }
 
             private async void Closing(object sender, CancelEventArgs e)

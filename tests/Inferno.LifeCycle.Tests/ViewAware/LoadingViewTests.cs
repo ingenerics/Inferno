@@ -8,7 +8,7 @@ namespace Inferno.LifeCycle.Tests
         public LoadingViewTests()
         {
             var dependencyResolver = new FakeDependencyResolverLifeCycle();
-            dependencyResolver.ReplaceSingletons<ISinkForViewFetcher>(new SinkForLoadedViewFetcher(), new TestSinkForViewFetcher());
+            dependencyResolver.ReplaceSingletons<ISinkForViewFetcher>(new SinkForLoadedViewFetcher(), new SinkForActivatedViewFetcher(new SinkForLoadedViewFetcher()), new TestSinkForViewFetcher());
             RxApp.Initialize(dependencyResolver);
             RxLifeCycle.Initialize(dependencyResolver);
         }

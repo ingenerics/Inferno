@@ -35,7 +35,7 @@ namespace ScoreBoard.Bootstrap
             container.Collection.Register<IBindingTypeConverter>(new EqualityTypeConverter(), new StringConverter(), new ComponentModelTypeConverter(), new BooleanToVisibilityTypeConverter());
             container.Collection.Register<ISetMethodBindingConverter>(new NullSetMethodBindingConverter());
             container.Collection.Register<IPropertyBindingHook>(new NullObjectBindingHook());
-            container.Collection.Register<ISinkForViewFetcher>(new SinkForLoadedViewFetcher());
+            container.Collection.Register<ISinkForViewFetcher>(new SinkForLoadedViewFetcher(), new SinkForActivatedViewFetcher(new SinkForLoadedViewFetcher()));
             container.RegisterInstance<IDependencyResolver>(dependencyResolver); // Used by IViewLocator to resolve views
             //    Components that are not covered by unit tests
             container.RegisterInstance(_application);

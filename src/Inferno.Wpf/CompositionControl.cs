@@ -20,8 +20,8 @@ namespace Inferno
             var viewModel = e.NewValue;
             if (content == null || viewModel == null) return;
             View.SetModel(content, viewModel);
-            //if (viewModel is IScreen screen && content.DataContext is IConductor conductor)
-            //    screen.ConductWith(conductor as IActivate);
+            if (viewModel is IScreen screen && content.DataContext is IConductor conductor)
+                screen.ConductWith(conductor as IActivate);
         }
     }
 }

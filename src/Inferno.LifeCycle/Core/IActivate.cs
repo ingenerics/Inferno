@@ -1,5 +1,4 @@
-﻿using System;
-using System.Threading;
+﻿using System.Threading;
 using System.Threading.Tasks;
 
 namespace Inferno
@@ -9,12 +8,20 @@ namespace Inferno
     /// </summary>
     public interface IActivate
     {
-        #region Activate
+        /// <summary>
+        /// Indicates whether or not this instance has been initialized.
+        /// </summary>
+        bool IsInitialized { get; }
 
-        ///<summary>
-        /// Indicates whether or not this instance is active.
-        ///</summary>
+        /// <summary>
+        /// Indicates whether or not this instance is currently active.
+        /// </summary>
         bool IsActive { get; }
+
+        /// <summary>
+        /// Encapsulates an item's initialization and (de)activation hooks.
+        /// </summary>
+        Activator Activator { get; }
 
         /// <summary>
         /// Activates this instance.
@@ -24,32 +31,11 @@ namespace Inferno
         Task ActivateAsync(CancellationToken cancellationToken);
 
         /// <summary>
-        /// Raised after activation occurs.
-        /// </summary>
-        event EventHandler<ActivationEventArgs> Activated;
-
-        #endregion Activate
-
-        #region Deactivate
-
-        /// <summary>
-        /// Raised before deactivation.
-        /// </summary>
-        event EventHandler<DeactivationEventArgs> AttemptingDeactivation;
-
-        /// <summary>
         /// Deactivates this instance.
         /// </summary>
         /// <param name="close">Indicates whether or not this instance is being closed.</param>
         /// <param name="cancellationToken">The cancellation token to cancel operation.</param>
         /// <returns>A task that represents the asynchronous operation.</returns>
         Task DeactivateAsync(bool close, CancellationToken cancellationToken);
-
-        /// <summary>
-        /// Raised after deactivation.
-        /// </summary>
-        event EventHandler<DeactivationEventArgs> Deactivated;
-
-        #endregion Deactivate
     }
 }

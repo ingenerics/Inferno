@@ -33,7 +33,7 @@ namespace Inferno.LifeCycle.Tests
             RegisterSingletons<IBindingTypeConverter>(new EqualityTypeConverter(), new StringConverter(), new ComponentModelTypeConverter(), new BooleanToVisibilityTypeConverter());
             RegisterSingletons<ISetMethodBindingConverter>(new NullSetMethodBindingConverter());
             RegisterSingletons<IPropertyBindingHook>(new NullObjectBindingHook());
-            RegisterSingletons<ISinkForViewFetcher>(new SinkForLoadedViewFetcher()/*, new SinkForActivatedViewFetcher(new SinkForLoadedViewFetcher())*/);
+            RegisterSingletons<ISinkForViewFetcher>(new SinkForLoadedViewFetcher(), new SinkForActivatedViewFetcher(new SinkForLoadedViewFetcher()));
         }
 
         public void RegisterSingleton<TService>(TService instance)
