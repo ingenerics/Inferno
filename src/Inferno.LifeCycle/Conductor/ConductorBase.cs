@@ -12,17 +12,17 @@ namespace Inferno
     /// <typeparam name="T">The type that is being conducted.</typeparam>
     public abstract class ConductorBase<T> : Screen, IConductor, IParent<T> where T : class
     {
-        //private ICloseStrategy<T> _closeStrategy;
+        private ICloseStrategy<T> _closeStrategy;
 
-        ///// <summary>
-        ///// Gets or sets the close strategy.
-        ///// </summary>
-        ///// <value>The close strategy.</value>
-        //public ICloseStrategy<T> CloseStrategy
-        //{
-        //    get => _closeStrategy ?? (_closeStrategy = new DefaultCloseStrategy<T>());
-        //    set => _closeStrategy = value;
-        //}
+        /// <summary>
+        /// Gets or sets the close strategy.
+        /// </summary>
+        /// <value>The close strategy.</value>
+        public ICloseStrategy<T> CloseStrategy
+        {
+            get => _closeStrategy ?? (_closeStrategy = new OneByOneCloseStrategy<T>());
+            set => this.RaiseAndSetIfChanged(ref _closeStrategy, value);
+        }
 
         Task IConductor.DeactivateItemAsync(object item, bool close, CancellationToken cancellationToken)
         {

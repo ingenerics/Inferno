@@ -5,40 +5,46 @@ using System.Reactive.Linq;
 
 namespace ScoreBoard.ViewModels
 {
-    public class ScoreViewModel : ReactiveObject
+    public class ScoreViewModel : Screen
     {
-        private readonly RxPropertyHelper<int> _score;
+        private RxPropertyHelper<int> _score;
 
         public ScoreViewModel(string backgroundColor)
         {
             BackgroundColor = backgroundColor;
 
-            IncrementScoreCommand = ReactiveCommand.Create(() => 1);
+            this.WhenInitialized(disposables =>
+            {
+                IncrementScoreCommand = ReactiveCommand.Create(() => 1).DisposeWith(disposables);
 
-            CanDecrement =
-                this
-                .WhenAnyValue(x => x.Score)
-                .Select(score => score > 0);
+                CanDecrement =
+                    this.WhenInitializedSwitch(
+                        this
+                            .WhenAnyValue(x => x.Score)
+                            .Select(score => score > 0),
+                        true);
 
-            DecrementScoreCommand = ReactiveCommand.Create(() => -1, CanDecrement);
+                DecrementScoreCommand = ReactiveCommand.Create(() => -1, CanDecrement).DisposeWith(disposables);
 
-            ResetScoreCommand = ReactiveCommand.Create(() => -Score);
+                ResetScoreCommand = ReactiveCommand.Create(() => -Score).DisposeWith(disposables);
 
-            _score = 
-                Observable.Merge(
-                    IncrementScoreCommand,
-                    DecrementScoreCommand,
-                    ResetScoreCommand)
-                .Scan(0, (acc, delta) => acc + delta)
-                .ToProperty(this, x => x.Score);
+                _score =
+                    Observable.Merge(
+                            IncrementScoreCommand,
+                            DecrementScoreCommand,
+                            ResetScoreCommand)
+                        .Scan(0, (acc, delta) => acc + delta)
+                        .ToProperty(this, x => x.Score)
+                        .DisposeWith(disposables);
+            });
         }
 
-        public int Score => _score?.Value ?? 0;
+        public int Score => _score.Value;
 
-        public readonly IObservable<bool> CanDecrement;
-        public ReactiveCommand<Unit, int> IncrementScoreCommand { get; }
-        public ReactiveCommand<Unit, int> DecrementScoreCommand { get; }
-        public ReactiveCommand<Unit, int> ResetScoreCommand { get; }
+        public IObservable<bool> CanDecrement { get; private set; }
+        public ReactiveCommand<Unit, int> IncrementScoreCommand { get; private set; }
+        public ReactiveCommand<Unit, int> DecrementScoreCommand { get; private set; }
+        public ReactiveCommand<Unit, int> ResetScoreCommand { get; private set; }
 
         public string BackgroundColor { get; }
     }

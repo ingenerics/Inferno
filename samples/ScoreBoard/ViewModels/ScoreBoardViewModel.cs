@@ -4,29 +4,33 @@ using System.Reactive.Linq;
 
 namespace ScoreBoard.ViewModels
 {
-    public class ScoreBoardViewModel : ReactiveObject
+    public class ScoreBoardViewModel : Conductor<ScoreViewModel>.Collection.AllActive
     {
-        private readonly CombinedReactiveCommand<Unit, int> ResetScoresCommand;
-
         public ScoreBoardViewModel()
         {
             ScoreHomeTeam = new ScoreViewModel("#FF024D70");
             ScoreVisitors = new ScoreViewModel("#FF7E0E03");
 
-            ResetScoresCommand = ReactiveCommand.CreateCombined(
-                new ReactiveCommand<Unit, int>[]
-                {
-                    ScoreHomeTeam.ResetScoreCommand,
-                    ScoreVisitors.ResetScoreCommand
-                });
+            Items.Add(ScoreHomeTeam);
+            Items.Add(ScoreVisitors);
 
-            var canStartNewGame =
-                Observable.CombineLatest(
-                    ScoreHomeTeam.CanDecrement,
-                    ScoreVisitors.CanDecrement,
-                    (canHomeDecr, canVisitorsDecr) => canHomeDecr || canVisitorsDecr);
-            NewGameCommand = ReactiveCommand.Create(() => Unit.Default, canStartNewGame);
-            NewGameCommand.InvokeCommand(ResetScoresCommand);
+            this.WhenActivated(disposables =>
+            {
+                var resetScoresCommand = ReactiveCommand.CreateCombined(
+                    new[]
+                    {
+                        ScoreHomeTeam.ResetScoreCommand,
+                        ScoreVisitors.ResetScoreCommand
+                    }).DisposeWith(disposables);
+
+                var canStartNewGame =
+                    Observable.CombineLatest(
+                        ScoreHomeTeam.CanDecrement,
+                        ScoreVisitors.CanDecrement,
+                        (canHomeDecr, canVisitorsDecr) => canHomeDecr || canVisitorsDecr);
+                NewGameCommand = ReactiveCommand.Create(() => Unit.Default, canStartNewGame).DisposeWith(disposables);
+                NewGameCommand.InvokeCommand(resetScoresCommand);
+            });
         }
 
         private ScoreViewModel _scoreHomeTeam;
@@ -43,6 +47,6 @@ namespace ScoreBoard.ViewModels
             set => this.RaiseAndSetIfChanged(ref _scoreVisitors, value);
         }
 
-        public ReactiveCommand<Unit, Unit> NewGameCommand { get; }
+        public ReactiveCommand<Unit, Unit> NewGameCommand { get; private set; }
     }
 }

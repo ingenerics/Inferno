@@ -12,7 +12,7 @@ namespace ScoreBoard
             InitializeComponent();
 
             this.OneWayBind(ViewModel,
-                viewModel => viewModel.ScoreBoardViewModel,
+                viewModel => viewModel.ActiveItem,
                 view => view.Host.ViewModel);
         }
     }

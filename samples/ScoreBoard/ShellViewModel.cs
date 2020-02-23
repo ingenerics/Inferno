@@ -3,13 +3,11 @@ using ScoreBoard.ViewModels;
 
 namespace ScoreBoard
 {
-    public class ShellViewModel : ReactiveObject
+    public class ShellViewModel : Conductor<ScoreBoardViewModel>
     {
         public ShellViewModel()
         {
-            ScoreBoardViewModel = new ScoreBoardViewModel();
+            ActiveItem = new ScoreBoardViewModel();
         }
-
-        public ScoreBoardViewModel ScoreBoardViewModel { get; set; }
     }
 }
