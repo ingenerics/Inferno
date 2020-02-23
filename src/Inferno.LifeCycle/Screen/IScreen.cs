@@ -3,10 +3,10 @@
 namespace Inferno
 {
     /// <summary>
-    /// Denotes an instance which implements <see cref="IHaveDisplayName"/>, <see cref="IActivate"/>, 
-    /// <see cref="IGuardClose"/> and <see cref="IReactiveObject"/>
+    /// Denotes an instance which implements <see cref="IReactiveObject"/>, <see cref="IHaveDisplayName"/>,
+    /// <see cref="IActivate"/> and <see cref="IGuardClose"/>
     /// </summary>
-    public interface IScreen : IHaveDisplayName, IActivate, IGuardClose, IReactiveObject
-    {
+    public interface IScreen : IReactiveObject, IHaveDisplayName, IActivate, IGuardClose
+    { 
     }
 }

@@ -15,7 +15,6 @@ namespace Inferno.Core.Tests
             _container = new Dictionary<Type, object>();
 
             var logger = new DebugLogger();
-            var callingAssembly = Assembly.GetCallingAssembly();
             _container.Add(typeof(ILogger), logger);
         }
 

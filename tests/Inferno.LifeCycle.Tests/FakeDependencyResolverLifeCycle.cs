@@ -5,13 +5,13 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Reflection;
 
-namespace Inferno.Wpf.Tests
+namespace Inferno.LifeCycle.Tests
 {
-    public class FakeDependencyResolverWpf : IDependencyResolver
+    public class FakeDependencyResolverLifeCycle : IDependencyResolver
     {
         private readonly Dictionary<Type, object> _container;
 
-        public FakeDependencyResolverWpf()
+        public FakeDependencyResolverLifeCycle()
         {
             _container = new Dictionary<Type, object>();
 
@@ -86,7 +86,7 @@ namespace Inferno.Wpf.Tests
         public object GetInstance(Type service)
         {
             MethodInfo method =
-                typeof(FakeDependencyResolverWpf)
+                typeof(FakeDependencyResolverLifeCycle)
                 .GetMethod(nameof(GetInstance), new Type[0])
                 .MakeGenericMethod(service);
 
