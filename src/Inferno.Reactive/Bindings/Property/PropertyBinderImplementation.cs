@@ -1,7 +1,7 @@
 ﻿using Inferno.Core;
+using Inferno.Core.Logging;
 using System;
 using System.Collections.Generic;
-using System.Diagnostics;
 using System.Linq;
 using System.Linq.Expressions;
 using System.Reactive.Disposables;
@@ -15,19 +15,25 @@ namespace Inferno
     /// </summary>
     public class PropertyBinderImplementation : IPropertyBinderImplementation
     {
+        private static ILogger _logger;
+
         private static MemoizingMRUCache<(Type fromType, Type toType), IBindingTypeConverter> _typeConverterCache;
         private static MemoizingMRUCache<(Type fromType, Type toType), ISetMethodBindingConverter> _setMethodCache;
         private static IEnumerable<IPropertyBindingHook> _propertyBindingHooks;
 
         internal static void Initialize(
+            ILogger logger,
             IEnumerable<IBindingTypeConverter> bindingTypeConverters,
             IEnumerable<ISetMethodBindingConverter> setMethodBindingConverters,
             IEnumerable<IPropertyBindingHook> propertyBindingHooks
             )
         {
+            if (logger == null) throw new ArgumentNullException(nameof(logger));
             if (bindingTypeConverters == null) throw new ArgumentNullException(nameof(bindingTypeConverters));
             if (setMethodBindingConverters == null) throw new ArgumentNullException(nameof(setMethodBindingConverters));
             if (propertyBindingHooks == null) throw new ArgumentNullException(nameof(propertyBindingHooks));
+
+            _logger = logger;
 
             _typeConverterCache =
                 new MemoizingMRUCache<(Type fromType, Type toType), IBindingTypeConverter>(
@@ -532,7 +538,7 @@ namespace Inferno
                     .Select(x => (TValue)SetThenGet(x.host, x.val, viewExpression.GetArgumentsArray()));
             }
 
-            return (setObservable.Subscribe(_ => { }, ex => Debug.WriteLine($"{viewExpression} Binding received an Exception:\n{ex.ToString()}\n{ex.Message}")), setObservable);
+            return (setObservable.Subscribe(_ => { }, ex => _logger.LogError(target, ex, $"{viewExpression} Binding received an Exception:")), setObservable);
         }
 
         private bool EvalBindingHooks<TViewModel, TView>(TViewModel viewModel, TView view, Expression vmExpression, Expression viewExpression, BindingDirection direction)
@@ -568,7 +574,7 @@ namespace Inferno
             {
                 var vmString = $"{typeof(TViewModel).Name}.{string.Join(".", vmExpression)}";
                 var vString = $"{typeof(TView).Name}.{string.Join(".", viewExpression)}";
-                Debug.WriteLine($"Binding hook asked to disable binding {vmString} => {vString}");
+                _logger.LogWarning(viewModel, $"Binding hook asked to disable binding {vmString} => {vString}");
             }
 
             return shouldBind;

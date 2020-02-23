@@ -8,8 +8,8 @@ namespace ScoreBoard.ViewModels
     {
         public ScoreBoardViewModel()
         {
-            ScoreHomeTeam = new ScoreViewModel("#FF024D70");
-            ScoreVisitors = new ScoreViewModel("#FF7E0E03");
+            ScoreHomeTeam = new ScoreViewModel("#FF024D70") { DisplayName = nameof(ScoreHomeTeam) };
+            ScoreVisitors = new ScoreViewModel("#FF7E0E03") { DisplayName = nameof(ScoreVisitors) };
 
             Items.Add(ScoreHomeTeam);
             Items.Add(ScoreVisitors);

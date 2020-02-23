@@ -5,8 +5,7 @@ using Xunit;
 namespace Inferno.Wpf.Tests
 {
     /*
-     * Do not run these tests in debug mode,
-     * because of the exceptions that are being thrown.
+     * Tests will fail in debug mode, because of exceptions being thrown.
      */
     public class TypeMappingTests
     {

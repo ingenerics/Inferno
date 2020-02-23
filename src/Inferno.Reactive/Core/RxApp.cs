@@ -120,6 +120,8 @@ namespace Inferno
 
             #region Configuration of static classes and shared state
 
+            IReactiveObjectExtensions.Initialize(_logger);
+
             var observableForPropertyFactories = _dependencyResolver.GetAllInstances<ICreatesObservableForProperty>();
             ReactiveNotifyPropertyChangedExtensions.Initialize(observableForPropertyFactories);
 
@@ -132,7 +134,7 @@ namespace Inferno
             var bindingTypeConverters = _dependencyResolver.GetAllInstances(typeof(IBindingTypeConverter)).OfType<IBindingTypeConverter>();
             var setMethodBindingConverters = _dependencyResolver.GetAllInstances(typeof(ISetMethodBindingConverter)).OfType<ISetMethodBindingConverter>();
             var propertyBindingHooks = _dependencyResolver.GetAllInstances(typeof(IPropertyBindingHook)).OfType<IPropertyBindingHook>();
-            PropertyBinderImplementation.Initialize(bindingTypeConverters, setMethodBindingConverters, propertyBindingHooks);
+            PropertyBinderImplementation.Initialize(_logger, bindingTypeConverters, setMethodBindingConverters, propertyBindingHooks);
 
             #endregion Configuration of static classes and shared state
         }

@@ -1,7 +1,7 @@
-﻿using System;
+﻿using Inferno.Core.Logging;
+using System;
 using System.Collections.Concurrent;
 using System.Collections.Generic;
-using System.Diagnostics;
 using System.Linq;
 using System.Linq.Expressions;
 using System.Reactive.Linq;
@@ -16,6 +16,13 @@ namespace Inferno
     public class POCOObservableForProperty : ICreatesObservableForProperty
     {
         private static readonly IDictionary<(Type, string), bool> hasWarned = new ConcurrentDictionary<(Type, string), bool>();
+
+        private readonly ILogger _logger;
+
+        public POCOObservableForProperty(ILogger logger)
+        {
+            _logger = logger;
+        }
 
         /// <inheritdoc/>
         public int GetAffinityForObject(Type type, string propertyName, bool beforeChanged = false)
@@ -34,7 +41,7 @@ namespace Inferno
             var type = sender.GetType();
             if (!hasWarned.ContainsKey((type, propertyName)) && !suppressWarnings)
             {
-                Debug.WriteLine($"The class {type.FullName} property {propertyName} is a POCO type and won't send change notifications, WhenAny will only return a single value!");
+                _logger.LogWarning(sender, $"The class {type.FullName} property {propertyName} is a POCO type and won't send change notifications, WhenAny will only return a single value!");
                 hasWarned[(type, propertyName)] = true;
             }
 

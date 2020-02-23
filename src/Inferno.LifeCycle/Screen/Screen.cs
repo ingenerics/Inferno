@@ -1,4 +1,6 @@
 ﻿using Inferno.Core;
+using Inferno.Core.Logging;
+using System;
 using System.Threading;
 using System.Threading.Tasks;
 
@@ -23,6 +25,13 @@ namespace Inferno
 
             View = new ViewSink();
             Activator = new Activator();
+        }
+
+        private static ILogger _logger;
+        public static ILogger Logger
+        {
+            get => _logger;
+            set => _logger = value ?? throw new NullReferenceException($"{nameof(Screen)}.{nameof(Logger)}");
         }
 
         /// <summary>
@@ -92,6 +101,7 @@ namespace Inferno
                 IsInitialized = initialized = true;
             }
 
+            Logger.LogInformation(this, $"Activating { this }");
             await OnActivateAsync(cancellationToken); // Recursively called on children (when using conductors)
 
             if (initialized)
@@ -110,6 +120,7 @@ namespace Inferno
         {
             if (IsActive || IsInitialized && close)
             {
+                Logger.LogInformation(this, $"Deactivating { this }");
                 await OnDeactivateAsync(close, cancellationToken);
 
                 // Dispose WhenActivated subscriptions
@@ -121,6 +132,7 @@ namespace Inferno
                 {
                     View.Dispose();
                     Activator.Dispose();
+                    Logger.LogInformation(this, $"Closed { this }");
                 }
             }
         }
@@ -182,5 +194,7 @@ namespace Inferno
         }
 
         #endregion Customizable LifeCycle
+
+        public override string ToString() => DisplayName ?? base.ToString();
     }
 }

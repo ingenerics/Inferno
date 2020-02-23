@@ -34,6 +34,11 @@ namespace Inferno.Core.Logging
             logger.Log(new LogEntry(LoggingEventType.Warning, message));
         }
 
+        public static void LogError(this ILogger logger, object classifier, Exception exception, string message)
+        {
+            logger.Log(new LogEntry(LoggingEventType.Error, message, classifier.GetType().Name, exception));
+        }
+
         public static void LogError(this ILogger logger, object classifier, Exception exception)
         {
             logger.Log(new LogEntry(LoggingEventType.Error, exception.Message, classifier.GetType().Name, exception));
@@ -42,6 +47,11 @@ namespace Inferno.Core.Logging
         public static void LogError(this ILogger logger, Exception exception)
         {
             logger.Log(new LogEntry(LoggingEventType.Error, exception.Message, exception: exception));
+        }
+
+        public static void LogFatal(this ILogger logger, object classifier, Exception exception, string message)
+        {
+            logger.Log(new LogEntry(LoggingEventType.Fatal, message, classifier.GetType().Name, exception));
         }
 
         public static void LogFatal(this ILogger logger, object classifier, Exception exception)

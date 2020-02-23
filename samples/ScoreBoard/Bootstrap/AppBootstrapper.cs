@@ -25,14 +25,15 @@ namespace ScoreBoard.Bootstrap
 
             // 3. Configure the container
             //    Register app components
+            var logger = new DebugLogger();
             container.RegisterInstance(SelectAssemblies());
-            container.Register<ILogger, DebugLogger>(Lifestyle.Singleton);
+            container.RegisterInstance<ILogger>(logger);
             container.Register<IViewLocator, ViewLocator>(Lifestyle.Singleton);
             container.Register<IViewModelBinder, ViewModelBinder>(Lifestyle.Singleton);
             container.Register<ICommandBinderImplementation, CommandBinderImplementation>(Lifestyle.Singleton);
-            container.Collection.Register<ICreatesObservableForProperty>(new INPCObservableForProperty(), new IROObservableForProperty(), new POCOObservableForProperty(), new DependencyObjectObservableForProperty());
+            container.Collection.Register<ICreatesObservableForProperty>(new INPCObservableForProperty(), new IROObservableForProperty(), new POCOObservableForProperty(logger), new DependencyObjectObservableForProperty(logger));
             container.Collection.Register<ICreatesCommandBinding>(new CreatesCommandBindingViaEvent(), new CreatesCommandBindingViaCommandParameter());
-            container.Collection.Register<IBindingTypeConverter>(new EqualityTypeConverter(), new StringConverter(), new ComponentModelTypeConverter(), new BooleanToVisibilityTypeConverter());
+            container.Collection.Register<IBindingTypeConverter>(new EqualityTypeConverter(logger), new StringConverter(), new ComponentModelTypeConverter(), new BooleanToVisibilityTypeConverter());
             container.Collection.Register<ISetMethodBindingConverter>(new NullSetMethodBindingConverter());
             container.Collection.Register<IPropertyBindingHook>(new NullObjectBindingHook());
             container.Collection.Register<ISinkForViewFetcher>(new SinkForLoadedViewFetcher(), new SinkForActivatedViewFetcher(new SinkForLoadedViewFetcher()));

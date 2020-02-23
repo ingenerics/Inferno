@@ -1,6 +1,6 @@
-﻿using System;
+﻿using Inferno.Core.Logging;
+using System;
 using System.Collections.Generic;
-using System.Diagnostics;
 using System.Diagnostics.Contracts;
 using System.Reactive;
 using System.Reactive.Disposables;
@@ -16,7 +16,16 @@ namespace Inferno
     /// </summary>
     public static class IReactiveObjectExtensions
     {
+        private static ILogger _logger;
+
         private static readonly ConditionalWeakTable<IReactiveObject, IExtensionState<IReactiveObject>> state = new ConditionalWeakTable<IReactiveObject, IExtensionState<IReactiveObject>>();
+
+        internal static void Initialize(ILogger logger)
+        {
+            if (logger == null) throw new ArgumentNullException(nameof(logger));
+
+            _logger = logger;
+        }
 
         /// <summary>
         /// Contains the state information about the current status of a Reactive Object.
@@ -379,7 +388,7 @@ namespace Inferno
                 }
                 catch (Exception ex)
                 {
-                    Debug.WriteLine(ex, "ReactiveObject Subscriber threw exception");
+                    _logger.LogError(rxObj, ex, "ReactiveObject Subscriber threw exception");
                     if (_thrownExceptions.IsValueCreated)
                     {
                         _thrownExceptions.Value.OnNext(ex);

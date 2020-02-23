@@ -1,6 +1,6 @@
-﻿using System;
+﻿using Inferno.Core.Logging;
+using System;
 using System.ComponentModel;
-using System.Diagnostics;
 using System.Linq;
 using System.Reactive.Disposables;
 using System.Reactive.Linq;
@@ -14,6 +14,13 @@ namespace Inferno
     /// </summary>
     public class DependencyObjectObservableForProperty : ICreatesObservableForProperty
     {
+        private readonly ILogger _logger;
+
+        public DependencyObjectObservableForProperty(ILogger logger)
+        {
+            _logger = logger;
+        }
+
         /// <inheritdoc/>
         public int GetAffinityForObject(Type type, string propertyName, bool beforeChanged = false)
         {
@@ -40,7 +47,7 @@ namespace Inferno
             {
                 if (!suppressWarnings)
                 {
-                    Debug.WriteLine("Couldn't find dependency property " + propertyName + " on " + type.Name);
+                    _logger.LogWarning(sender, "Couldn't find dependency property " + propertyName + " on " + type.Name);
                 }
 
                 throw new NullReferenceException("Couldn't find dependency property " + propertyName + " on " + type.Name);

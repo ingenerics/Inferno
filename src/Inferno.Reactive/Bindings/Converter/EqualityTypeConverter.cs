@@ -1,5 +1,5 @@
-﻿using System;
-using System.Diagnostics;
+﻿using Inferno.Core.Logging;
+using System;
 using System.Diagnostics.Contracts;
 using System.Linq;
 using System.Reflection;
@@ -19,6 +19,13 @@ namespace Inferno
               }, RxApp.SmallCacheLimit);
 
         private static MethodInfo _methodInfo;
+
+        private readonly ILogger _logger;
+
+        public EqualityTypeConverter(ILogger logger)
+        {
+            _logger = logger;
+        }
 
         /// <summary>
         /// Handles casting for a reference. Understands about nullable types
@@ -108,7 +115,7 @@ namespace Inferno
             }
             catch (Exception ex)
             {
-                Debug.WriteLine($"Couldn't convert object to type: {toType}\n{ex.ToString()}\n{ex.Message}");
+                _logger.LogInformation(from, $"Couldn't convert from {from.GetType()} to {toType}\n{ex}\n{ex.Message}");
                 result = null;
                 return false;
             }

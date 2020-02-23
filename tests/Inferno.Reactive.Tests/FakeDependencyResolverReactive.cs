@@ -9,15 +9,16 @@ namespace Inferno.Reactive.Tests
 {
     public class FakeDependencyResolverReactive : IDependencyResolver
     {
+        private readonly ILogger _logger;
         private readonly Dictionary<Type, object> _container;
 
         public FakeDependencyResolverReactive()
         {
+            _logger = new DebugLogger();
             _container = new Dictionary<Type, object>();
 
-            var logger = new DebugLogger();
             var callingAssembly = Assembly.GetCallingAssembly();
-            _container.Add(typeof(ILogger), logger);
+            _container.Add(typeof(ILogger), _logger);
 
             InitializeReactiveComponents();
         }
@@ -25,9 +26,9 @@ namespace Inferno.Reactive.Tests
         private void InitializeReactiveComponents()
         {
             RegisterSingleton<ICommandBinderImplementation>(new CommandBinderImplementation());
-            RegisterSingletons<ICreatesObservableForProperty>(new INPCObservableForProperty(), new IROObservableForProperty(), new POCOObservableForProperty(), new DependencyObjectObservableForProperty());
+            RegisterSingletons<ICreatesObservableForProperty>(new INPCObservableForProperty(), new IROObservableForProperty(), new POCOObservableForProperty(_logger), new DependencyObjectObservableForProperty(_logger));
             RegisterSingletons<ICreatesCommandBinding>(new CreatesCommandBindingViaEvent(), new CreatesCommandBindingViaCommandParameter());
-            RegisterSingletons<IBindingTypeConverter>(new EqualityTypeConverter(), new StringConverter(), new ComponentModelTypeConverter(), new BooleanToVisibilityTypeConverter());
+            RegisterSingletons<IBindingTypeConverter>(new EqualityTypeConverter(_logger), new StringConverter(), new ComponentModelTypeConverter(), new BooleanToVisibilityTypeConverter());
             RegisterSingletons<ISetMethodBindingConverter>(new NullSetMethodBindingConverter());
             RegisterSingletons<IPropertyBindingHook>(new NullObjectBindingHook());
         }

@@ -3,6 +3,9 @@ using Xunit;
 
 namespace Inferno.Reactive.Tests
 {
+    /*
+     * Tests will fail in debug mode, because of exceptions being thrown.
+     */
     public class BindingTypeConvertersTest
     {
         [Fact]
