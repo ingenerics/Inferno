@@ -26,8 +26,14 @@ namespace ScoreBoard.Bootstrap
             // 3. Configure the container
             //    Register app components
             var logger = new DebugLogger();
+            var themeManager = 
+                new ThemeManager(
+                    MahAppsTheme.BaseDark, 
+                    MahAppsAccent.Steel);
+
             container.RegisterInstance(SelectAssemblies());
             container.RegisterInstance<ILogger>(logger);
+            container.RegisterInstance<IThemeManager>(themeManager);
             container.Register<IViewLocator, ViewLocator>(Lifestyle.Singleton);
             container.Register<IViewModelBinder, ViewModelBinder>(Lifestyle.Singleton);
             container.Register<ICommandBinderImplementation, CommandBinderImplementation>(Lifestyle.Singleton);

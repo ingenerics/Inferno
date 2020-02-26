@@ -1,0 +1,27 @@
+﻿<Project Sdk="Microsoft.NET.Sdk">
+
+  <PropertyGroup>
+    <TargetFramework>net461</TargetFramework>
+    <PackageId>Inferno.Wpf.Metro</PackageId>
+    <Version>1.0.0</Version>
+    <Authors>ingenerics</Authors>
+    <Company>ingenerics</Company>
+  </PropertyGroup>
+
+  <ItemGroup>
+    <Reference Include="PresentationCore" />
+    <Reference Include="PresentationFramework" />
+    <Reference Include="System.Xaml" />
+    <Reference Include="WindowsBase" />
+    <PackageReference Include="Microsoft.Xaml.Behaviors.Wpf" Version="1.1.19" />
+    <PackageReference Include="MahApps.Metro" Version="1.6.5" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <ProjectReference Include="..\Inferno.Core\Inferno.Core.csproj" />
+    <ProjectReference Include="..\Inferno.LifeCycle\Inferno.LifeCycle.csproj" />
+    <ProjectReference Include="..\Inferno.Reactive\Inferno.Reactive.csproj" />
+    <ProjectReference Include="..\Inferno.Wpf.Shared\Inferno.Wpf.Shared.csproj" />
+  </ItemGroup>
+
+</Project>

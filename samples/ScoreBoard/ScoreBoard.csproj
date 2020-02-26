@@ -2,11 +2,12 @@
 
   <PropertyGroup>
     <OutputType>WinExe</OutputType>
-    <TargetFramework>netcoreapp3.1</TargetFramework>
+    <TargetFramework>net461</TargetFramework>
     <UseWPF>true</UseWPF>
   </PropertyGroup>
 
   <ItemGroup>
+    <PackageReference Include="MahApps.Metro" Version="1.6.5" />
     <PackageReference Include="SimpleInjector" Version="4.9.0" />
   </ItemGroup>
 
@@ -14,8 +15,8 @@
     <ProjectReference Include="..\..\src\Inferno.Core\Inferno.Core.csproj" />
     <ProjectReference Include="..\..\src\Inferno.LifeCycle\Inferno.LifeCycle.csproj" />
     <ProjectReference Include="..\..\src\Inferno.Reactive\Inferno.Reactive.csproj" />
+    <ProjectReference Include="..\..\src\Inferno.Wpf.Metro\Inferno.Wpf.Metro.csproj" />
     <ProjectReference Include="..\..\src\Inferno.Wpf.Shared\Inferno.Wpf.Shared.csproj" />
-    <ProjectReference Include="..\..\src\Inferno.Wpf\Inferno.Wpf.csproj" />
   </ItemGroup>
 
 </Project>
