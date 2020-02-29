@@ -11,7 +11,7 @@
     d:DesignHeight="300" d:DesignWidth="300">
     <DockPanel LastChildFill="True" Background="{DynamicResource AccentColorBrush}">
         <Button x:Name="NewBtn" DockPanel.Dock="Bottom"
-                Height="70" Width="120" Margin="10">
+                Height="70" Width="120" Opacity="0.5" Margin="10">
             <TextBlock Text="New Game" FontSize="18"></TextBlock>
         </Button>
         <Grid>

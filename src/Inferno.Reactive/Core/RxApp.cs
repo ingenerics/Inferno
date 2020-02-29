@@ -120,6 +120,7 @@ namespace Inferno
 
             #region Configuration of static classes and shared state
 
+            ReactiveLoggerExtensions.Initialize(_logger);
             IReactiveObjectExtensions.Initialize(_logger);
 
             var observableForPropertyFactories = _dependencyResolver.GetAllInstances<ICreatesObservableForProperty>();

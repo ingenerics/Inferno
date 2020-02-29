@@ -60,15 +60,26 @@ namespace Inferno
         public IObservable<bool> Deactivated => _deactivated;
 
         /// <summary>
+        /// Gets a observable which will tick true when the item has been initialized and false otherwise.
+        /// </summary>
+        /// <value>The activated.</value>
+        public IObservable<bool> IsInitialized =>
+            _initialized
+                .Select(_ => true)
+                .StartWith(false)
+                .Replay(1)
+                .RefCount();
+
+        /// <summary>
         /// Gets a observable which will tick true when the item is activated and false otherwise.
         /// </summary>
         /// <value>The activated.</value>
         public IObservable<bool> IsActive =>
             Observable.Merge(
-                _activated.Select(_ => true),
-                _deactivated.Select(_ => false))
-            .Replay(1)
-            .RefCount();
+                    _activated.Select(_ => true),
+                    _deactivated.Select(_ => false))
+                .Replay(1)
+                .RefCount();
 
         /// <summary>
         /// This method is called by the framework when the corresponding ViewModel is initialized.

@@ -155,8 +155,8 @@ namespace Inferno
         /// <param name="initialValue"></param>
         /// <returns>A disposable.</returns>
         public static IObservable<T> WhenInitializedSwitch<T>(this IActivate item, IObservable<T> source, T initialValue)
-            => item.Activator.Initialized.Select(_ => source)
-                .StartWith(Observable.Return(initialValue))
+            => item.Activator.IsInitialized
+                .Select(isInitialized => isInitialized ? source : Observable.Return(initialValue))
                 .Switch();
 
         /// <summary>

@@ -22,7 +22,7 @@ namespace ScoreBoard.ViewModels
                         this
                             .WhenAnyValue(x => x.Score)
                             .Select(score => score > 0),
-                        true);
+                        false);
 
                 DecrementScoreCommand = ReactiveCommand.Create(() => -1, CanDecrement).DisposeWith(disposables);
 
