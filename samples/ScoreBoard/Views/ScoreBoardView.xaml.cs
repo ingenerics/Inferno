@@ -28,6 +28,11 @@ namespace ScoreBoard.Views
                         viewModel => viewModel.NewGameCommand,
                         view => view.NewBtn)
                     .DisposeWith(disposables);
+
+                this.BindCommand(ViewModel,
+                        viewModel => viewModel.CloseCommand,
+                        view => view.CloseBtn)
+                    .DisposeWith(disposables);
             });
         }
     }

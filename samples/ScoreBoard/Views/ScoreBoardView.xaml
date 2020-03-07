@@ -10,10 +10,14 @@
     mc:Ignorable="d"
     d:DesignHeight="300" d:DesignWidth="300">
     <DockPanel LastChildFill="True" Background="{DynamicResource AccentColorBrush}">
-        <Button x:Name="NewBtn" DockPanel.Dock="Bottom"
-                Height="70" Width="120" Opacity="0.5" Margin="10">
-            <TextBlock Text="New Game" FontSize="18"></TextBlock>
-        </Button>
+        <StackPanel DockPanel.Dock="Bottom" Orientation="Horizontal" HorizontalAlignment="Center">
+            <Button x:Name="NewBtn" Height="70" Width="120" Opacity="0.5" Margin="10">
+                <TextBlock Text="New Game" FontSize="18"></TextBlock>
+            </Button>
+            <Button x:Name="CloseBtn" Height="70" Width="120" Opacity="0.5" Margin="10">
+                <TextBlock Text="End Game" FontSize="18"></TextBlock>
+            </Button>
+        </StackPanel>
         <Grid>
             <Grid.ColumnDefinitions>
                 <ColumnDefinition />

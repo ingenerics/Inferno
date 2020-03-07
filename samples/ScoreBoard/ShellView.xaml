@@ -8,6 +8,7 @@
     xmlns:inferno="http://inferno.net"
     xmlns:local="clr-namespace:ScoreBoard"
     mc:Ignorable="d" WindowStartupLocation="CenterScreen"
-    d:DesignHeight="300" d:DesignWidth="300">
+    d:DesignHeight="300" d:DesignWidth="300" ShowTitleBar="False" 
+    ShowMinButton="False" ShowMaxRestoreButton="False" ShowCloseButton="False">
     <inferno:CompositionControl x:Name="Host" />
 </inferno:RxWindow>

@@ -68,6 +68,12 @@ namespace Inferno
             var view = EnsureWindow(rootModel, ViewLocator.LocateForModel(rootModel, context), isDialog);
             ViewModelBinder.Bind(rootModel, view);
 
+            if (rootModel is IShell)
+            {
+                var binding = new Binding(nameof(IShell.RequestClose)) { Mode = BindingMode.TwoWay };
+                view.SetBinding(WindowCloser.RequestCloseProperty, binding);
+            }
+
             if (string.IsNullOrEmpty(view.Title) && rootModel is IHaveDisplayName)
             {
                 var binding = new Binding(nameof(IHaveDisplayName.DisplayName)) { Mode = BindingMode.TwoWay };
@@ -88,7 +94,7 @@ namespace Inferno
         /// </summary>
         /// <param name="model">The view model.</param>
         /// <param name="view">The view.</param>
-        /// <param name="isDialog">Whethor or not the window is being shown as a dialog.</param>
+        /// <param name="isDialog">Whether or not the window is being shown as a dialog.</param>
         /// <returns>The window.</returns>
         protected virtual Window EnsureWindow(object model, object view, bool isDialog)
         {

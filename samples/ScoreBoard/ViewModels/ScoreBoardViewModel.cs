@@ -29,6 +29,8 @@ namespace ScoreBoard.ViewModels
                         ScoreVisitors.ResetScoreCommand
                     },
                     canStartNewGame).DisposeWith(disposables);
+                
+                CloseCommand = ReactiveCommand.Create(() => Unit.Default).DisposeWith(disposables);
             });
         }
 
@@ -47,5 +49,6 @@ namespace ScoreBoard.ViewModels
         }
 
         public CombinedReactiveCommand<Unit, int> NewGameCommand { get; private set; }
+        public ReactiveCommand<Unit, Unit> CloseCommand { get; private set; }
     }
 }
