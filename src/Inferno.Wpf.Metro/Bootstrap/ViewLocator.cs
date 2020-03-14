@@ -8,6 +8,7 @@ using System.Windows;
 using System.Windows.Controls;
 using Inferno.Core;
 using Inferno.Core.Logging;
+using Inferno.DialogManagement.Views;
 
 namespace Inferno
 {
@@ -41,6 +42,8 @@ namespace Inferno
 
             ConfigureTypeMappings(new TypeMappingConfiguration());
         }
+
+        #region Conventions
 
         /// <summary>
         /// Specifies how type mappings are created, including default type mappings. Calling this method will
@@ -78,8 +81,6 @@ namespace Inferno
 
             SetAllDefaults();
         }
-
-        #region Defaults
 
         private void SetAllDefaults()
         {
@@ -264,7 +265,7 @@ namespace Inferno
             AddSubNamespaceMapping(nsSource, new[] { nsTarget }, viewSuffix);
         }
 
-        #endregion Defaults
+        #endregion Conventions
 
         /// <summary>
         ///   Locates the view for the specified model instance.
@@ -273,11 +274,13 @@ namespace Inferno
         /// <remarks>
         ///   Pass the model instance and the context (or null) as parameters and receive a view instance.
         /// </remarks>
-        public UIElement LocateForModel(object model, object context)
+        public UIElement LocateForModel(object model, object context, bool isDialog)
         {
             HydrateViewModel(model);
 
-            return LocateForModelType(model.GetType(), context);
+            return isDialog ?
+                LocateForDialogModelType(model.GetType(), context) :
+                LocateForModelType(model.GetType(), context);
         }
 
         /// <summary>
@@ -296,9 +299,9 @@ namespace Inferno
         {
             var useViewForAttributes =
                 modelType
-                .GetCustomAttributes(typeof(UseViewForAttribute), true)
-                .Cast<UseViewForAttribute>()
-                .ToList();
+                    .GetCustomAttributes(typeof(UseViewForAttribute), true)
+                    .Cast<UseViewForAttribute>()
+                    .ToList();
 
             Contract.Assert(useViewForAttributes.Count() <= 1, "There should not be more than one UseViewForAttribute on a view model");
 
@@ -308,6 +311,38 @@ namespace Inferno
             return viewType == null
                 ? new TextBlock { Text = string.Format("Cannot find view for {0}.", modelType) }
                 : GetOrCreateViewType(viewType);
+        }
+
+        /// <summary>
+        ///   Locates the view for the specified model type.
+        /// </summary>
+        /// <returns>The view.</returns>
+        /// <remarks>
+        ///   Pass the model type and the context instance (or null) as parameters and receive a view instance.
+        /// </remarks>
+        public virtual UIElement LocateForDialogModelType(Type modelType, object context)
+        {
+            var dialogModelType = modelType.GetInterfaces()
+                .FirstOrDefault(x =>
+                    x.IsGenericType &&
+                    x.GetGenericTypeDefinition() == typeof(IDialogViewModel<>));
+
+            UIElement result;
+
+            if (dialogModelType == null)
+            {
+                result = LocateForModelType(modelType, context);
+            }
+            else
+            {
+                var dialogViewType = typeof(DialogView<>);
+                var choiceType = dialogModelType.GenericTypeArguments.Single();
+                var viewType = dialogViewType.MakeGenericType(choiceType);
+
+                result = GetOrCreateViewType(viewType);
+            }
+
+            return result;
         }
 
         /// <summary>

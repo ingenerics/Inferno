@@ -47,7 +47,8 @@ namespace ScoreBoard.Bootstrap
             //    Components that are not covered by unit tests
             container.RegisterInstance(_application);
             container.Register<IWindowManager, WindowManager>(Lifestyle.Singleton);
-
+            container.Register<IDialogManager, DialogManager>(Lifestyle.Singleton);
+            
             // 4. Verify your configuration (optional)
             container.Verify();
 
@@ -68,7 +69,7 @@ namespace ScoreBoard.Bootstrap
         /// <returns>A list of assemblies to inspect.</returns>
         protected override AssemblySource SelectAssemblies()
         {
-            return new AssemblySource(typeof(ShellView).Assembly);
+            return new AssemblySource(typeof(IDialogManager).Assembly, typeof(ShellView).Assembly);
         }
     }
 }

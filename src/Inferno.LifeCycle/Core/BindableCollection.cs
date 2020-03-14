@@ -225,19 +225,21 @@ namespace Inferno.Core
             });
         }
 
+        #region Dispatcher
+
         /// <summary>
         /// Executes the action on the UI thread.
         /// </summary>
         /// <param name="action">The action to execute.</param>
-        /// <exception cref="System.NotImplementedException"></exception>
-        public virtual void OnUIThread(System.Action action)
+        /// <exception cref="NotImplementedException"></exception>
+        protected void OnUIThread(Action action)
         {
             if (CheckAccess())
                 action();
             else
             {
                 Exception exception = null;
-                System.Action method = () => {
+                Action method = () => {
                     try
                     {
                         action();
@@ -253,9 +255,11 @@ namespace Inferno.Core
             }
         }
 
-        private bool CheckAccess()
+        protected bool CheckAccess()
         {
             return _dispatcher == null || _dispatcher.CheckAccess();
         }
+
+        #endregion Dispatcher
     }
 }

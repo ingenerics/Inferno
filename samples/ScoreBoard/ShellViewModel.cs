@@ -1,22 +1,45 @@
 ﻿using Inferno;
 using ScoreBoard.ViewModels;
 using System.Reactive.Linq;
+using System.Threading.Tasks;
 
 namespace ScoreBoard
 {
     public class ShellViewModel : Conductor<ScoreBoardViewModel>, IShell
     {
-        public ShellViewModel()
+        private readonly IDialogManager _dialogManager;
+
+        public ShellViewModel(IDialogManager dialogManager)
         {
+            _dialogManager = dialogManager;
+
             ActiveItem = new ScoreBoardViewModel();
 
             this.WhenInitialized(disposables =>
             {
                 this.ActiveItem.CloseCommand
-                    .Select(_ => RequestClose = true)
-                    .SubscribeLogger("Requested close application")
+                    .Log("Requested close application")
+                    .SelectMany(_ => AskConfirmation())
+                    .SubscribeLogger("Confirmed close application")
                     .DisposeWith(disposables);
             });
+        }
+
+        private async Task<bool?> AskConfirmation()
+        {
+            var dialogResult = 
+                await _dialogManager.ShowMessageBox(
+                    "Confirm", 
+                    "Do you want to exit?", 
+                    DialogType.Question,
+                    ButtonChoice.Yes, ButtonChoice.No);
+
+            if (dialogResult == true)
+            {
+                RequestClose = true;
+            }
+
+            return dialogResult;
         }
 
         private bool _requestClose;

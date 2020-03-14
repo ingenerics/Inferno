@@ -240,7 +240,7 @@ namespace Inferno
             {
                 var context = GetContext(targetLocation);
 
-                var view = ViewLocator.LocateForModel(args.NewValue, context);
+                var view = ViewLocator.LocateForModel(args.NewValue, context, false);
                 if (!SetContentProperty(targetLocation, view))
                 {
                     Logger.LogWarning(ViewLocator,"SetContentProperty failed for ViewLocator.LocateForModel, falling back to LocateForModelType");
@@ -271,7 +271,7 @@ namespace Inferno
                 return;
             }
 
-            var view = ViewLocator.LocateForModel(model, e.NewValue);
+            var view = ViewLocator.LocateForModel(model, e.NewValue, false);
 
             if (!SetContentProperty(targetLocation, view))
             {

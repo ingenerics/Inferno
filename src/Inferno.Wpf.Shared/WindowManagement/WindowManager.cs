@@ -65,13 +65,18 @@ namespace Inferno
         /// <returns>The window.</returns>
         protected virtual async Task<Window> CreateWindowAsync(object rootModel, bool isDialog, object context, IDictionary<string, object> settings)
         {
-            var view = EnsureWindow(rootModel, ViewLocator.LocateForModel(rootModel, context), isDialog);
+            var view = EnsureWindow(rootModel, ViewLocator.LocateForModel(rootModel, context, isDialog), isDialog);
             ViewModelBinder.Bind(rootModel, view);
 
             if (rootModel is IShell)
             {
                 var binding = new Binding(nameof(IShell.RequestClose)) { Mode = BindingMode.TwoWay };
                 view.SetBinding(WindowCloser.RequestCloseProperty, binding);
+            }
+            else if (rootModel is IHaveDialogResult)
+            {
+                var binding = new Binding(nameof(IHaveDialogResult.DialogResult)) { Mode = BindingMode.TwoWay };
+                view.SetBinding(DialogCloser.DialogResultProperty, binding);
             }
 
             if (string.IsNullOrEmpty(view.Title) && rootModel is IHaveDisplayName)

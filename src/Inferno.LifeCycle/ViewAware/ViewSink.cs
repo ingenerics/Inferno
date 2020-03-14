@@ -82,6 +82,8 @@ namespace Inferno
         /// <inheritdoc/>
         public void Dispose()
         {
+            ViewUnloaded(true);
+
             _onLoadedHandle?.Dispose();
             _onViewLoaded?.Dispose();
             _onViewUnloaded?.Dispose();
