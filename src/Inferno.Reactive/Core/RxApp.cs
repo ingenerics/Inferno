@@ -32,16 +32,14 @@ namespace Inferno
     /*
      * ADDENDUM
      * ========
-     * Inferno takes a slightly different approach in the way the ExecutionMode is resolved:
-     * - The ExecutionMode is mode is passed as an argument to the Initialize call.
-     * - Inferno always expects the bootstrapper to have initialized RxApp by calling
-     *   RxApp.Initialize(this, executionMode). This is where static classes and shared state
-     *   for extension methods are configured. This needs to be done for all ExecutionModes. 
+     * Inferno expects the bootstrapper to have initialized RxApp by calling
+     *   `RxApp.Initialize(DependencyResolver, DispatcherScheduler.Current);`.
+     * This is where static classes and shared state for extension methods are configured. 
      * I considered moving all the configuration code to the Bootstrapper, but this way:
      *   -- RxApp functions as the gathering ground for all the reactive specific configurations.
      *   -- We still have a way to intercept, i.e. perform actions before calling RxApp.Initialize.
      *      In contrast to the approach taken by the ReactiveUI designers who trusted the initialization
-     *      of components to their static constructors.
+     *      of components to static constructors.
      */
     public static class RxApp
     {

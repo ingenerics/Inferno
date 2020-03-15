@@ -15,7 +15,7 @@ namespace Inferno
     /// Views are Loaded when they *enter* the Visual Tree, and are Unloaded when they *leave* the Visual Tree.
     /// It is critical to understand this when it comes to UI virtualization.
     ///
-    /// NOTE: You **must** call WhenLoaded in the corresponding View when using WhenViewLoaded in the ViewModel.
+    /// NOTE: To use WhenLoaded in the ViewModel, you **must** also call WhenLoaded in the corresponding View.
     /// </summary>
     public sealed class ViewSink : IDisposable
     {

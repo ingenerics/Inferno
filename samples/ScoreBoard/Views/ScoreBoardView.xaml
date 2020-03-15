@@ -23,8 +23,8 @@
                 <ColumnDefinition />
                 <ColumnDefinition />
             </Grid.ColumnDefinitions>
-            <inferno:CompositionControl x:Name="scoreHomeTeam" Grid.Column="0" />
-            <inferno:CompositionControl x:Name="scoreVisitors" Grid.Column="1" />
+            <inferno:CompositionControl x:Name="ScoreHomeTeam" Grid.Column="0" />
+            <inferno:CompositionControl x:Name="ScoreVisitors" Grid.Column="1" />
         </Grid>
     </DockPanel>
 </inferno:RxUserControl>

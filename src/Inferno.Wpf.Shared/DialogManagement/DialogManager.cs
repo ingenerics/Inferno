@@ -134,7 +134,7 @@ namespace Inferno
 
         private static void AddNonDefault(string propertyName, double value, Dictionary<string, object> dictionary)
         {
-            if (Math.Abs(value - Constants.Default) > 0.00001) // Compensating for rounding errors
+            if (Math.Abs(value - DialogSettings.Default) > 0.00001) // Compensating for rounding errors
             {
                 dictionary.Add(propertyName, value);
             }

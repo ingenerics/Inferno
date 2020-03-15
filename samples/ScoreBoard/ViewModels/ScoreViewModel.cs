@@ -30,12 +30,12 @@ namespace ScoreBoard.ViewModels
 
                 _score =
                     Observable.Merge(
-                            IncrementScoreCommand,
-                            DecrementScoreCommand,
-                            ResetScoreCommand)
-                        .Scan(0, (acc, delta) => acc + delta)
-                        .ToProperty(this, x => x.Score)
-                        .DisposeWith(disposables);
+                        IncrementScoreCommand,
+                        DecrementScoreCommand,
+                        ResetScoreCommand)
+                    .Scan(0, (acc, delta) => acc + delta)
+                    .ToProperty(this, x => x.Score)
+                    .DisposeWith(disposables);
             });
         }
 

@@ -4,9 +4,11 @@ namespace Inferno
 {
     public class DialogSettings : IDialogSettings
     {
+        public const int Default = -2;
+
         public DialogSettings()
         {
-            Width = MinWidth = Height = MinHeight = Constants.Default;
+            Width = MinWidth = Height = MinHeight = Default;
         }
 
         public double Width { get; set; }

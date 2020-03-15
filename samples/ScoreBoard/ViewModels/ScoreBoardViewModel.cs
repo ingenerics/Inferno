@@ -22,13 +22,15 @@ namespace ScoreBoard.ViewModels
                         ScoreVisitors.CanDecrement,
                         (canHomeDecr, canVisitorsDecr) => canHomeDecr || canVisitorsDecr);
 
-                NewGameCommand = ReactiveCommand.CreateCombined(
-                    new[]
-                    {
-                        ScoreHomeTeam.ResetScoreCommand,
-                        ScoreVisitors.ResetScoreCommand
-                    },
-                    canStartNewGame).DisposeWith(disposables);
+                NewGameCommand = 
+                    ReactiveCommand.CreateCombined(
+                        new[]
+                        {
+                            ScoreHomeTeam.ResetScoreCommand,
+                            ScoreVisitors.ResetScoreCommand
+                        },
+                        canStartNewGame)
+                    .DisposeWith(disposables);
                 
                 CloseCommand = ReactiveCommand.Create(() => Unit.Default).DisposeWith(disposables);
             });

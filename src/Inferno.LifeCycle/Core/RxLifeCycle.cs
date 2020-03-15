@@ -4,7 +4,7 @@ using Inferno.Core.Logging;
 namespace Inferno
 {
     /// <summary>
-    /// The main orchestrator for lifecycle events in a Inferno application.
+    /// The main orchestrator that initializes the Inferno lifecycle.
     /// </summary>
     public static class RxLifeCycle
     {

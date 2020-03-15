@@ -32,6 +32,7 @@ namespace Inferno
             }
 
             compositeDisposable.Add(item);
+
             return item;
         }
     }

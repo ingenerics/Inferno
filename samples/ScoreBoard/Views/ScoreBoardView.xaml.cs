@@ -16,12 +16,12 @@ namespace ScoreBoard.Views
             {
                 this.OneWayBind(ViewModel,
                         viewModel => viewModel.ScoreHomeTeam,
-                        view => view.scoreHomeTeam.ViewModel)
+                        view => view.ScoreHomeTeam.ViewModel)
                     .DisposeWith(disposables);
 
                 this.OneWayBind(ViewModel,
                         viewModel => viewModel.ScoreVisitors,
-                        view => view.scoreVisitors.ViewModel)
+                        view => view.ScoreVisitors.ViewModel)
                     .DisposeWith(disposables);
 
                 this.BindCommand(ViewModel,

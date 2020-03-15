@@ -37,7 +37,7 @@ namespace Inferno
         public Type FindViewTypeByNames(IEnumerable<string> names)
             => FindByNames(names, _viewTypes);
 
-        private Type FindByNames(IEnumerable<string> names, IEnumerable<Type> types)
+        private static Type FindByNames(IEnumerable<string> names, IEnumerable<Type> types)
         {
             if (names == null)
             {

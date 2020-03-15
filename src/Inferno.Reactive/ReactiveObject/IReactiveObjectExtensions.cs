@@ -22,9 +22,7 @@ namespace Inferno
 
         internal static void Initialize(ILogger logger)
         {
-            if (logger == null) throw new ArgumentNullException(nameof(logger));
-
-            _logger = logger;
+            _logger = logger ?? throw new ArgumentNullException(nameof(logger));
         }
 
         /// <summary>
@@ -380,7 +378,7 @@ namespace Inferno
                 }
             }
 
-            internal void NotifyObservable<T>(TSender rxObj, T item, ISubject<T> subject)
+            private void NotifyObservable<T>(TSender rxObj, T item, ISubject<T> subject)
             {
                 try
                 {

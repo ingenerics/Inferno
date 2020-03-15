@@ -39,6 +39,7 @@ namespace Inferno
 
                         node = indexExpr.Object;
                         break;
+
                     case ExpressionType.MemberAccess:
                         var memberExpr = (MemberExpression)node;
                         if (memberExpr.Expression.NodeType != ExpressionType.Parameter)
@@ -52,6 +53,7 @@ namespace Inferno
 
                         node = memberExpr.Expression;
                         break;
+
                     default:
                         throw new NotSupportedException($"Unsupported expression type: '{node.NodeType}'");
                 }
@@ -81,12 +83,15 @@ namespace Inferno
                 case ExpressionType.Index:
                     info = ((IndexExpression)expression).Indexer;
                     break;
+
                 case ExpressionType.MemberAccess:
                     info = ((MemberExpression)expression).Member;
                     break;
+
                 case ExpressionType.Convert:
                 case ExpressionType.ConvertChecked:
                     return GetMemberInfo(((UnaryExpression)expression).Operand);
+
                 default:
                     throw new NotSupportedException($"Unsupported expression type: '{expression.NodeType}'");
             }
@@ -110,8 +115,10 @@ namespace Inferno
             {
                 case ExpressionType.Index:
                     return ((IndexExpression)expression).Object;
+
                 case ExpressionType.MemberAccess:
                     return ((MemberExpression)expression).Expression;
+
                 default:
                     throw new NotSupportedException($"Unsupported expression type: '{expression.NodeType}'");
             }

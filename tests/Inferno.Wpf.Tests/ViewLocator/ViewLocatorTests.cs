@@ -22,7 +22,7 @@ namespace Inferno.Wpf.Tests
             // Arrange
             var viewModel = new ShellViewModel();
             // Act
-            var view = _viewLocator.LocateForModel(viewModel, null);
+            var view = _viewLocator.LocateForModel(viewModel, null, false);
             // Assert
             Assert.NotNull(view);
             Assert.IsType<ShellView>(view);
@@ -34,7 +34,8 @@ namespace Inferno.Wpf.Tests
             // Arrange
             var viewModel = new SharedViewModel();
             // Act
-            var view = _viewLocator.LocateForModel(viewModel, "ViewA");
+            var view = _viewLocator.LocateForModel(viewModel, "ViewA", false);
+            // Assert
             // Assert
             Assert.NotNull(view);
             Assert.IsType<ViewA>(view);
@@ -46,7 +47,7 @@ namespace Inferno.Wpf.Tests
             // Arrange
             var viewModel = new AttributedViewModel();
             // Act
-            var view = _viewLocator.LocateForModel(viewModel, null);
+            var view = _viewLocator.LocateForModel(viewModel, null, false);
             // Assert
             Assert.NotNull(view);
             Assert.IsType<ShellView>(view);

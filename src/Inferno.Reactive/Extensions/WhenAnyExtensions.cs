@@ -33,9 +33,7 @@ namespace Inferno
                             Expression<Func<TSender, T1>> property1,
                             Func<T1, TRet> selector)
         {
-            return This.WhenAny(property1,
-                                (c1) =>
-                                    selector(c1.Value));
+            return This.WhenAny(property1, (c1) => selector(c1.Value));
         }
 
         /// <summary>
@@ -64,7 +62,8 @@ namespace Inferno
                             Func<IObservedChange<TSender, object>, TRet> selector)
         {
             return ReactiveNotifyPropertyChangedExtensions
-    .SubscribeToExpressionChain<TSender, object>(This, property1, false, false).Select(selector);
+                        .SubscribeToExpressionChain<TSender, object>(This, property1, false, false)
+                        .Select(selector);
         }
 
         /// <summary>
@@ -80,9 +79,7 @@ namespace Inferno
                         Expression<Func<TSender, T2>> property2
             )
         {
-            return This.WhenAny(property1, property2,
-                                (c1, c2) =>
-                                    (c1.Value, c2.Value));
+            return This.WhenAny(property1, property2, (c1, c2) => (c1.Value, c2.Value));
         }
 
         /// <summary>
@@ -97,9 +94,7 @@ namespace Inferno
                             Expression<Func<TSender, T2>> property2,
                             Func<T1, T2, TRet> selector)
         {
-            return This.WhenAny(property1, property2,
-                                (c1, c2) =>
-                                    selector(c1.Value, c2.Value));
+            return This.WhenAny(property1, property2, (c1, c2) => selector(c1.Value, c2.Value));
         }
 
         /// <summary>
@@ -117,8 +112,7 @@ namespace Inferno
             return Observable.CombineLatest(
                         This.ObservableForProperty(property1, false, false),
                         This.ObservableForProperty(property2, false, false),
-                    selector
-);
+                        selector);
         }
 
 
@@ -136,11 +130,10 @@ namespace Inferno
         {
             return Observable.CombineLatest(
                         ReactiveNotifyPropertyChangedExtensions
-            .SubscribeToExpressionChain<TSender, object>(This, property1, false, false),
+                            .SubscribeToExpressionChain<TSender, object>(This, property1, false, false),
                         ReactiveNotifyPropertyChangedExtensions
-            .SubscribeToExpressionChain<TSender, object>(This, property2, false, false),
-                    selector
-);
+                            .SubscribeToExpressionChain<TSender, object>(This, property2, false, false),
+                        selector);
         }
 
         /// <summary>
@@ -157,9 +150,7 @@ namespace Inferno
                         Expression<Func<TSender, T3>> property3
             )
         {
-            return This.WhenAny(property1, property2, property3,
-                                (c1, c2, c3) =>
-                                    (c1.Value, c2.Value, c3.Value));
+            return This.WhenAny(property1, property2, property3,  (c1, c2, c3) => (c1.Value, c2.Value, c3.Value));
         }
 
         /// <summary>
@@ -175,9 +166,7 @@ namespace Inferno
                             Expression<Func<TSender, T3>> property3,
                             Func<T1, T2, T3, TRet> selector)
         {
-            return This.WhenAny(property1, property2, property3,
-                                (c1, c2, c3) =>
-                                    selector(c1.Value, c2.Value, c3.Value));
+            return This.WhenAny(property1, property2, property3,  (c1, c2, c3) => selector(c1.Value, c2.Value, c3.Value));
         }
 
         /// <summary>
@@ -197,8 +186,7 @@ namespace Inferno
                         This.ObservableForProperty(property1, false, false),
                         This.ObservableForProperty(property2, false, false),
                         This.ObservableForProperty(property3, false, false),
-                    selector
-);
+                        selector);
         }
 
 
@@ -217,13 +205,12 @@ namespace Inferno
         {
             return Observable.CombineLatest(
                         ReactiveNotifyPropertyChangedExtensions
-            .SubscribeToExpressionChain<TSender, object>(This, property1, false, false),
+                            .SubscribeToExpressionChain<TSender, object>(This, property1, false, false),
                         ReactiveNotifyPropertyChangedExtensions
-            .SubscribeToExpressionChain<TSender, object>(This, property2, false, false),
+                            .SubscribeToExpressionChain<TSender, object>(This, property2, false, false),
                         ReactiveNotifyPropertyChangedExtensions
-            .SubscribeToExpressionChain<TSender, object>(This, property3, false, false),
-                    selector
-);
+                            .SubscribeToExpressionChain<TSender, object>(This, property3, false, false),
+                        selector);
         }
 
         /// <summary>
@@ -234,16 +221,13 @@ namespace Inferno
         /// need an initial setup.
         /// </summary>
         public static IObservable<(T1, T2, T3, T4)> WhenAnyValue<TSender, T1, T2, T3, T4>(
-            this TSender This,
+                        this TSender This,
                         Expression<Func<TSender, T1>> property1,
                         Expression<Func<TSender, T2>> property2,
                         Expression<Func<TSender, T3>> property3,
-                        Expression<Func<TSender, T4>> property4
-            )
+                        Expression<Func<TSender, T4>> property4)
         {
-            return This.WhenAny(property1, property2, property3, property4,
-                                (c1, c2, c3, c4) =>
-                                    (c1.Value, c2.Value, c3.Value, c4.Value));
+            return This.WhenAny(property1, property2, property3, property4, (c1, c2, c3, c4) => (c1.Value, c2.Value, c3.Value, c4.Value));
         }
 
         /// <summary>
@@ -260,9 +244,7 @@ namespace Inferno
                             Expression<Func<TSender, T4>> property4,
                             Func<T1, T2, T3, T4, TRet> selector)
         {
-            return This.WhenAny(property1, property2, property3, property4,
-                                (c1, c2, c3, c4) =>
-                                    selector(c1.Value, c2.Value, c3.Value, c4.Value));
+            return This.WhenAny(property1, property2, property3, property4, (c1, c2, c3, c4) => selector(c1.Value, c2.Value, c3.Value, c4.Value));
         }
 
         /// <summary>
@@ -284,8 +266,7 @@ namespace Inferno
                         This.ObservableForProperty(property2, false, false),
                         This.ObservableForProperty(property3, false, false),
                         This.ObservableForProperty(property4, false, false),
-                    selector
-);
+                        selector);
         }
 
 
@@ -305,15 +286,14 @@ namespace Inferno
         {
             return Observable.CombineLatest(
                         ReactiveNotifyPropertyChangedExtensions
-            .SubscribeToExpressionChain<TSender, object>(This, property1, false, false),
+                            .SubscribeToExpressionChain<TSender, object>(This, property1, false, false),
                         ReactiveNotifyPropertyChangedExtensions
-            .SubscribeToExpressionChain<TSender, object>(This, property2, false, false),
+                            .SubscribeToExpressionChain<TSender, object>(This, property2, false, false),
                         ReactiveNotifyPropertyChangedExtensions
-            .SubscribeToExpressionChain<TSender, object>(This, property3, false, false),
+                            .SubscribeToExpressionChain<TSender, object>(This, property3, false, false),
                         ReactiveNotifyPropertyChangedExtensions
-            .SubscribeToExpressionChain<TSender, object>(This, property4, false, false),
-                    selector
-);
+                            .SubscribeToExpressionChain<TSender, object>(This, property4, false, false),
+                        selector);
         }
 
         /// <summary>
@@ -329,12 +309,9 @@ namespace Inferno
                         Expression<Func<TSender, T2>> property2,
                         Expression<Func<TSender, T3>> property3,
                         Expression<Func<TSender, T4>> property4,
-                        Expression<Func<TSender, T5>> property5
-            )
+                        Expression<Func<TSender, T5>> property5)
         {
-            return This.WhenAny(property1, property2, property3, property4, property5,
-                                (c1, c2, c3, c4, c5) =>
-                                    (c1.Value, c2.Value, c3.Value, c4.Value, c5.Value));
+            return This.WhenAny(property1, property2, property3, property4, property5, (c1, c2, c3, c4, c5) => (c1.Value, c2.Value, c3.Value, c4.Value, c5.Value));
         }
 
         /// <summary>
@@ -352,9 +329,7 @@ namespace Inferno
                             Expression<Func<TSender, T5>> property5,
                             Func<T1, T2, T3, T4, T5, TRet> selector)
         {
-            return This.WhenAny(property1, property2, property3, property4, property5,
-                                (c1, c2, c3, c4, c5) =>
-                                    selector(c1.Value, c2.Value, c3.Value, c4.Value, c5.Value));
+            return This.WhenAny(property1, property2, property3, property4, property5, (c1, c2, c3, c4, c5) => selector(c1.Value, c2.Value, c3.Value, c4.Value, c5.Value));
         }
 
         /// <summary>
@@ -378,8 +353,7 @@ namespace Inferno
                         This.ObservableForProperty(property3, false, false),
                         This.ObservableForProperty(property4, false, false),
                         This.ObservableForProperty(property5, false, false),
-                    selector
-);
+                        selector);
         }
 
 
@@ -400,17 +374,16 @@ namespace Inferno
         {
             return Observable.CombineLatest(
                         ReactiveNotifyPropertyChangedExtensions
-            .SubscribeToExpressionChain<TSender, object>(This, property1, false, false),
+                            .SubscribeToExpressionChain<TSender, object>(This, property1, false, false),
                         ReactiveNotifyPropertyChangedExtensions
-            .SubscribeToExpressionChain<TSender, object>(This, property2, false, false),
+                            .SubscribeToExpressionChain<TSender, object>(This, property2, false, false),
                         ReactiveNotifyPropertyChangedExtensions
-            .SubscribeToExpressionChain<TSender, object>(This, property3, false, false),
+                            .SubscribeToExpressionChain<TSender, object>(This, property3, false, false),
                         ReactiveNotifyPropertyChangedExtensions
-            .SubscribeToExpressionChain<TSender, object>(This, property4, false, false),
+                            .SubscribeToExpressionChain<TSender, object>(This, property4, false, false),
                         ReactiveNotifyPropertyChangedExtensions
-            .SubscribeToExpressionChain<TSender, object>(This, property5, false, false),
-                    selector
-);
+                            .SubscribeToExpressionChain<TSender, object>(This, property5, false, false),
+                        selector);
         }
 
         /// <summary>
@@ -430,9 +403,7 @@ namespace Inferno
                         Expression<Func<TSender, T6>> property6
             )
         {
-            return This.WhenAny(property1, property2, property3, property4, property5, property6,
-                                (c1, c2, c3, c4, c5, c6) =>
-                                    (c1.Value, c2.Value, c3.Value, c4.Value, c5.Value, c6.Value));
+            return This.WhenAny(property1, property2, property3, property4, property5, property6, (c1, c2, c3, c4, c5, c6) => (c1.Value, c2.Value, c3.Value, c4.Value, c5.Value, c6.Value));
         }
 
         /// <summary>
@@ -451,9 +422,7 @@ namespace Inferno
                             Expression<Func<TSender, T6>> property6,
                             Func<T1, T2, T3, T4, T5, T6, TRet> selector)
         {
-            return This.WhenAny(property1, property2, property3, property4, property5, property6,
-                                (c1, c2, c3, c4, c5, c6) =>
-                                    selector(c1.Value, c2.Value, c3.Value, c4.Value, c5.Value, c6.Value));
+            return This.WhenAny(property1, property2, property3, property4, property5, property6, (c1, c2, c3, c4, c5, c6) => selector(c1.Value, c2.Value, c3.Value, c4.Value, c5.Value, c6.Value));
         }
 
         /// <summary>
@@ -479,8 +448,7 @@ namespace Inferno
                         This.ObservableForProperty(property4, false, false),
                         This.ObservableForProperty(property5, false, false),
                         This.ObservableForProperty(property6, false, false),
-                    selector
-);
+                        selector);
         }
 
 
@@ -502,19 +470,18 @@ namespace Inferno
         {
             return Observable.CombineLatest(
                         ReactiveNotifyPropertyChangedExtensions
-            .SubscribeToExpressionChain<TSender, object>(This, property1, false, false),
+                            .SubscribeToExpressionChain<TSender, object>(This, property1, false, false),
                         ReactiveNotifyPropertyChangedExtensions
-            .SubscribeToExpressionChain<TSender, object>(This, property2, false, false),
+                            .SubscribeToExpressionChain<TSender, object>(This, property2, false, false),
                         ReactiveNotifyPropertyChangedExtensions
-            .SubscribeToExpressionChain<TSender, object>(This, property3, false, false),
+                            .SubscribeToExpressionChain<TSender, object>(This, property3, false, false),
                         ReactiveNotifyPropertyChangedExtensions
-            .SubscribeToExpressionChain<TSender, object>(This, property4, false, false),
+                            .SubscribeToExpressionChain<TSender, object>(This, property4, false, false),
                         ReactiveNotifyPropertyChangedExtensions
-            .SubscribeToExpressionChain<TSender, object>(This, property5, false, false),
+                            .SubscribeToExpressionChain<TSender, object>(This, property5, false, false),
                         ReactiveNotifyPropertyChangedExtensions
-            .SubscribeToExpressionChain<TSender, object>(This, property6, false, false),
-                    selector
-);
+                            .SubscribeToExpressionChain<TSender, object>(This, property6, false, false),
+                        selector);
         }
 
         /// <summary>
@@ -535,9 +502,7 @@ namespace Inferno
                         Expression<Func<TSender, T7>> property7
             )
         {
-            return This.WhenAny(property1, property2, property3, property4, property5, property6, property7,
-                                (c1, c2, c3, c4, c5, c6, c7) =>
-                                    (c1.Value, c2.Value, c3.Value, c4.Value, c5.Value, c6.Value, c7.Value));
+            return This.WhenAny(property1, property2, property3, property4, property5, property6, property7, (c1, c2, c3, c4, c5, c6, c7) => (c1.Value, c2.Value, c3.Value, c4.Value, c5.Value, c6.Value, c7.Value));
         }
 
         /// <summary>
@@ -557,9 +522,7 @@ namespace Inferno
                             Expression<Func<TSender, T7>> property7,
                             Func<T1, T2, T3, T4, T5, T6, T7, TRet> selector)
         {
-            return This.WhenAny(property1, property2, property3, property4, property5, property6, property7,
-                                (c1, c2, c3, c4, c5, c6, c7) =>
-                                    selector(c1.Value, c2.Value, c3.Value, c4.Value, c5.Value, c6.Value, c7.Value));
+            return This.WhenAny(property1, property2, property3, property4, property5, property6, property7, (c1, c2, c3, c4, c5, c6, c7) => selector(c1.Value, c2.Value, c3.Value, c4.Value, c5.Value, c6.Value, c7.Value));
         }
 
         /// <summary>
@@ -587,8 +550,7 @@ namespace Inferno
                         This.ObservableForProperty(property5, false, false),
                         This.ObservableForProperty(property6, false, false),
                         This.ObservableForProperty(property7, false, false),
-                    selector
-);
+                        selector);
         }
 
 
@@ -611,21 +573,20 @@ namespace Inferno
         {
             return Observable.CombineLatest(
                         ReactiveNotifyPropertyChangedExtensions
-            .SubscribeToExpressionChain<TSender, object>(This, property1, false, false),
+                            .SubscribeToExpressionChain<TSender, object>(This, property1, false, false),
                         ReactiveNotifyPropertyChangedExtensions
-            .SubscribeToExpressionChain<TSender, object>(This, property2, false, false),
+                            .SubscribeToExpressionChain<TSender, object>(This, property2, false, false),
                         ReactiveNotifyPropertyChangedExtensions
-            .SubscribeToExpressionChain<TSender, object>(This, property3, false, false),
+                            .SubscribeToExpressionChain<TSender, object>(This, property3, false, false),
                         ReactiveNotifyPropertyChangedExtensions
-            .SubscribeToExpressionChain<TSender, object>(This, property4, false, false),
+                            .SubscribeToExpressionChain<TSender, object>(This, property4, false, false),
                         ReactiveNotifyPropertyChangedExtensions
-            .SubscribeToExpressionChain<TSender, object>(This, property5, false, false),
+                            .SubscribeToExpressionChain<TSender, object>(This, property5, false, false),
                         ReactiveNotifyPropertyChangedExtensions
-            .SubscribeToExpressionChain<TSender, object>(This, property6, false, false),
+                            .SubscribeToExpressionChain<TSender, object>(This, property6, false, false),
                         ReactiveNotifyPropertyChangedExtensions
-            .SubscribeToExpressionChain<TSender, object>(This, property7, false, false),
-                    selector
-);
+                            .SubscribeToExpressionChain<TSender, object>(This, property7, false, false),
+                        selector);
         }
 
 
@@ -647,9 +608,7 @@ namespace Inferno
                             Expression<Func<TSender, T8>> property8,
                             Func<T1, T2, T3, T4, T5, T6, T7, T8, TRet> selector)
         {
-            return This.WhenAny(property1, property2, property3, property4, property5, property6, property7, property8,
-                                (c1, c2, c3, c4, c5, c6, c7, c8) =>
-                                    selector(c1.Value, c2.Value, c3.Value, c4.Value, c5.Value, c6.Value, c7.Value, c8.Value));
+            return This.WhenAny(property1, property2, property3, property4, property5, property6, property7, property8, (c1, c2, c3, c4, c5, c6, c7, c8) => selector(c1.Value, c2.Value, c3.Value, c4.Value, c5.Value, c6.Value, c7.Value, c8.Value));
         }
 
         /// <summary>
@@ -679,8 +638,7 @@ namespace Inferno
                         This.ObservableForProperty(property6, false, false),
                         This.ObservableForProperty(property7, false, false),
                         This.ObservableForProperty(property8, false, false),
-                    selector
-);
+                        selector);
         }
 
 
@@ -704,23 +662,22 @@ namespace Inferno
         {
             return Observable.CombineLatest(
                         ReactiveNotifyPropertyChangedExtensions
-            .SubscribeToExpressionChain<TSender, object>(This, property1, false, false),
+                            .SubscribeToExpressionChain<TSender, object>(This, property1, false, false),
                         ReactiveNotifyPropertyChangedExtensions
-            .SubscribeToExpressionChain<TSender, object>(This, property2, false, false),
+                            .SubscribeToExpressionChain<TSender, object>(This, property2, false, false),
                         ReactiveNotifyPropertyChangedExtensions
-            .SubscribeToExpressionChain<TSender, object>(This, property3, false, false),
+                            .SubscribeToExpressionChain<TSender, object>(This, property3, false, false),
                         ReactiveNotifyPropertyChangedExtensions
-            .SubscribeToExpressionChain<TSender, object>(This, property4, false, false),
+                            .SubscribeToExpressionChain<TSender, object>(This, property4, false, false),
                         ReactiveNotifyPropertyChangedExtensions
-            .SubscribeToExpressionChain<TSender, object>(This, property5, false, false),
+                            .SubscribeToExpressionChain<TSender, object>(This, property5, false, false),
                         ReactiveNotifyPropertyChangedExtensions
-            .SubscribeToExpressionChain<TSender, object>(This, property6, false, false),
+                            .SubscribeToExpressionChain<TSender, object>(This, property6, false, false),
                         ReactiveNotifyPropertyChangedExtensions
-            .SubscribeToExpressionChain<TSender, object>(This, property7, false, false),
+                            .SubscribeToExpressionChain<TSender, object>(This, property7, false, false),
                         ReactiveNotifyPropertyChangedExtensions
-            .SubscribeToExpressionChain<TSender, object>(This, property8, false, false),
-                    selector
-);
+                            .SubscribeToExpressionChain<TSender, object>(This, property8, false, false),
+                        selector);
         }
 
 
@@ -743,9 +700,7 @@ namespace Inferno
                             Expression<Func<TSender, T9>> property9,
                             Func<T1, T2, T3, T4, T5, T6, T7, T8, T9, TRet> selector)
         {
-            return This.WhenAny(property1, property2, property3, property4, property5, property6, property7, property8, property9,
-                                (c1, c2, c3, c4, c5, c6, c7, c8, c9) =>
-                                    selector(c1.Value, c2.Value, c3.Value, c4.Value, c5.Value, c6.Value, c7.Value, c8.Value, c9.Value));
+            return This.WhenAny(property1, property2, property3, property4, property5, property6, property7, property8, property9, (c1, c2, c3, c4, c5, c6, c7, c8, c9) => selector(c1.Value, c2.Value, c3.Value, c4.Value, c5.Value, c6.Value, c7.Value, c8.Value, c9.Value));
         }
 
         /// <summary>
@@ -777,8 +732,7 @@ namespace Inferno
                         This.ObservableForProperty(property7, false, false),
                         This.ObservableForProperty(property8, false, false),
                         This.ObservableForProperty(property9, false, false),
-                    selector
-);
+                        selector);
         }
 
 
@@ -803,25 +757,24 @@ namespace Inferno
         {
             return Observable.CombineLatest(
                         ReactiveNotifyPropertyChangedExtensions
-            .SubscribeToExpressionChain<TSender, object>(This, property1, false, false),
+                            .SubscribeToExpressionChain<TSender, object>(This, property1, false, false),
                         ReactiveNotifyPropertyChangedExtensions
-            .SubscribeToExpressionChain<TSender, object>(This, property2, false, false),
+                            .SubscribeToExpressionChain<TSender, object>(This, property2, false, false),
                         ReactiveNotifyPropertyChangedExtensions
-            .SubscribeToExpressionChain<TSender, object>(This, property3, false, false),
+                            .SubscribeToExpressionChain<TSender, object>(This, property3, false, false),
                         ReactiveNotifyPropertyChangedExtensions
-            .SubscribeToExpressionChain<TSender, object>(This, property4, false, false),
+                            .SubscribeToExpressionChain<TSender, object>(This, property4, false, false),
                         ReactiveNotifyPropertyChangedExtensions
-            .SubscribeToExpressionChain<TSender, object>(This, property5, false, false),
+                            .SubscribeToExpressionChain<TSender, object>(This, property5, false, false),
                         ReactiveNotifyPropertyChangedExtensions
-            .SubscribeToExpressionChain<TSender, object>(This, property6, false, false),
+                            .SubscribeToExpressionChain<TSender, object>(This, property6, false, false),
                         ReactiveNotifyPropertyChangedExtensions
-            .SubscribeToExpressionChain<TSender, object>(This, property7, false, false),
+                            .SubscribeToExpressionChain<TSender, object>(This, property7, false, false),
                         ReactiveNotifyPropertyChangedExtensions
-            .SubscribeToExpressionChain<TSender, object>(This, property8, false, false),
+                            .SubscribeToExpressionChain<TSender, object>(This, property8, false, false),
                         ReactiveNotifyPropertyChangedExtensions
-            .SubscribeToExpressionChain<TSender, object>(This, property9, false, false),
-                    selector
-);
+                            .SubscribeToExpressionChain<TSender, object>(This, property9, false, false),
+                        selector);
         }
 
 
@@ -845,9 +798,7 @@ namespace Inferno
                             Expression<Func<TSender, T10>> property10,
                             Func<T1, T2, T3, T4, T5, T6, T7, T8, T9, T10, TRet> selector)
         {
-            return This.WhenAny(property1, property2, property3, property4, property5, property6, property7, property8, property9, property10,
-                                (c1, c2, c3, c4, c5, c6, c7, c8, c9, c10) =>
-                                    selector(c1.Value, c2.Value, c3.Value, c4.Value, c5.Value, c6.Value, c7.Value, c8.Value, c9.Value, c10.Value));
+            return This.WhenAny(property1, property2, property3, property4, property5, property6, property7, property8, property9, property10, (c1, c2, c3, c4, c5, c6, c7, c8, c9, c10) => selector(c1.Value, c2.Value, c3.Value, c4.Value, c5.Value, c6.Value, c7.Value, c8.Value, c9.Value, c10.Value));
         }
 
         /// <summary>
@@ -881,8 +832,7 @@ namespace Inferno
                         This.ObservableForProperty(property8, false, false),
                         This.ObservableForProperty(property9, false, false),
                         This.ObservableForProperty(property10, false, false),
-                    selector
-);
+                        selector);
         }
 
 
@@ -908,27 +858,26 @@ namespace Inferno
         {
             return Observable.CombineLatest(
                         ReactiveNotifyPropertyChangedExtensions
-            .SubscribeToExpressionChain<TSender, object>(This, property1, false, false),
+                            .SubscribeToExpressionChain<TSender, object>(This, property1, false, false),
                         ReactiveNotifyPropertyChangedExtensions
-            .SubscribeToExpressionChain<TSender, object>(This, property2, false, false),
+                            .SubscribeToExpressionChain<TSender, object>(This, property2, false, false),
                         ReactiveNotifyPropertyChangedExtensions
-            .SubscribeToExpressionChain<TSender, object>(This, property3, false, false),
+                            .SubscribeToExpressionChain<TSender, object>(This, property3, false, false),
                         ReactiveNotifyPropertyChangedExtensions
-            .SubscribeToExpressionChain<TSender, object>(This, property4, false, false),
+                            .SubscribeToExpressionChain<TSender, object>(This, property4, false, false),
                         ReactiveNotifyPropertyChangedExtensions
-            .SubscribeToExpressionChain<TSender, object>(This, property5, false, false),
+                            .SubscribeToExpressionChain<TSender, object>(This, property5, false, false),
                         ReactiveNotifyPropertyChangedExtensions
-            .SubscribeToExpressionChain<TSender, object>(This, property6, false, false),
+                            .SubscribeToExpressionChain<TSender, object>(This, property6, false, false),
                         ReactiveNotifyPropertyChangedExtensions
-            .SubscribeToExpressionChain<TSender, object>(This, property7, false, false),
+                            .SubscribeToExpressionChain<TSender, object>(This, property7, false, false),
                         ReactiveNotifyPropertyChangedExtensions
-            .SubscribeToExpressionChain<TSender, object>(This, property8, false, false),
+                            .SubscribeToExpressionChain<TSender, object>(This, property8, false, false),
                         ReactiveNotifyPropertyChangedExtensions
-            .SubscribeToExpressionChain<TSender, object>(This, property9, false, false),
+                            .SubscribeToExpressionChain<TSender, object>(This, property9, false, false),
                         ReactiveNotifyPropertyChangedExtensions
-            .SubscribeToExpressionChain<TSender, object>(This, property10, false, false),
-                    selector
-);
+                            .SubscribeToExpressionChain<TSender, object>(This, property10, false, false),
+                        selector);
         }
 
 
@@ -953,9 +902,7 @@ namespace Inferno
                             Expression<Func<TSender, T11>> property11,
                             Func<T1, T2, T3, T4, T5, T6, T7, T8, T9, T10, T11, TRet> selector)
         {
-            return This.WhenAny(property1, property2, property3, property4, property5, property6, property7, property8, property9, property10, property11,
-                                (c1, c2, c3, c4, c5, c6, c7, c8, c9, c10, c11) =>
-                                    selector(c1.Value, c2.Value, c3.Value, c4.Value, c5.Value, c6.Value, c7.Value, c8.Value, c9.Value, c10.Value, c11.Value));
+            return This.WhenAny(property1, property2, property3, property4, property5, property6, property7, property8, property9, property10, property11, (c1, c2, c3, c4, c5, c6, c7, c8, c9, c10, c11) => selector(c1.Value, c2.Value, c3.Value, c4.Value, c5.Value, c6.Value, c7.Value, c8.Value, c9.Value, c10.Value, c11.Value));
         }
 
         /// <summary>
@@ -991,8 +938,7 @@ namespace Inferno
                         This.ObservableForProperty(property9, false, false),
                         This.ObservableForProperty(property10, false, false),
                         This.ObservableForProperty(property11, false, false),
-                    selector
-);
+                        selector);
         }
 
 
@@ -1019,29 +965,28 @@ namespace Inferno
         {
             return Observable.CombineLatest(
                         ReactiveNotifyPropertyChangedExtensions
-            .SubscribeToExpressionChain<TSender, object>(This, property1, false, false),
+                            .SubscribeToExpressionChain<TSender, object>(This, property1, false, false),
                         ReactiveNotifyPropertyChangedExtensions
-            .SubscribeToExpressionChain<TSender, object>(This, property2, false, false),
+                            .SubscribeToExpressionChain<TSender, object>(This, property2, false, false),
                         ReactiveNotifyPropertyChangedExtensions
-            .SubscribeToExpressionChain<TSender, object>(This, property3, false, false),
+                            .SubscribeToExpressionChain<TSender, object>(This, property3, false, false),
                         ReactiveNotifyPropertyChangedExtensions
-            .SubscribeToExpressionChain<TSender, object>(This, property4, false, false),
+                            .SubscribeToExpressionChain<TSender, object>(This, property4, false, false),
                         ReactiveNotifyPropertyChangedExtensions
-            .SubscribeToExpressionChain<TSender, object>(This, property5, false, false),
+                            .SubscribeToExpressionChain<TSender, object>(This, property5, false, false),
                         ReactiveNotifyPropertyChangedExtensions
-            .SubscribeToExpressionChain<TSender, object>(This, property6, false, false),
+                            .SubscribeToExpressionChain<TSender, object>(This, property6, false, false),
                         ReactiveNotifyPropertyChangedExtensions
-            .SubscribeToExpressionChain<TSender, object>(This, property7, false, false),
+                            .SubscribeToExpressionChain<TSender, object>(This, property7, false, false),
                         ReactiveNotifyPropertyChangedExtensions
-            .SubscribeToExpressionChain<TSender, object>(This, property8, false, false),
+                            .SubscribeToExpressionChain<TSender, object>(This, property8, false, false),
                         ReactiveNotifyPropertyChangedExtensions
-            .SubscribeToExpressionChain<TSender, object>(This, property9, false, false),
+                            .SubscribeToExpressionChain<TSender, object>(This, property9, false, false),
                         ReactiveNotifyPropertyChangedExtensions
-            .SubscribeToExpressionChain<TSender, object>(This, property10, false, false),
+                            .SubscribeToExpressionChain<TSender, object>(This, property10, false, false),
                         ReactiveNotifyPropertyChangedExtensions
-            .SubscribeToExpressionChain<TSender, object>(This, property11, false, false),
-                    selector
-);
+                            .SubscribeToExpressionChain<TSender, object>(This, property11, false, false),
+                        selector);
         }
 
 
@@ -1067,9 +1012,7 @@ namespace Inferno
                             Expression<Func<TSender, T12>> property12,
                             Func<T1, T2, T3, T4, T5, T6, T7, T8, T9, T10, T11, T12, TRet> selector)
         {
-            return This.WhenAny(property1, property2, property3, property4, property5, property6, property7, property8, property9, property10, property11, property12,
-                                (c1, c2, c3, c4, c5, c6, c7, c8, c9, c10, c11, c12) =>
-                                    selector(c1.Value, c2.Value, c3.Value, c4.Value, c5.Value, c6.Value, c7.Value, c8.Value, c9.Value, c10.Value, c11.Value, c12.Value));
+            return This.WhenAny(property1, property2, property3, property4, property5, property6, property7, property8, property9, property10, property11, property12, (c1, c2, c3, c4, c5, c6, c7, c8, c9, c10, c11, c12) => selector(c1.Value, c2.Value, c3.Value, c4.Value, c5.Value, c6.Value, c7.Value, c8.Value, c9.Value, c10.Value, c11.Value, c12.Value));
         }
 
         /// <summary>
@@ -1107,8 +1050,7 @@ namespace Inferno
                         This.ObservableForProperty(property10, false, false),
                         This.ObservableForProperty(property11, false, false),
                         This.ObservableForProperty(property12, false, false),
-                    selector
-);
+                        selector);
         }
 
 
@@ -1136,31 +1078,30 @@ namespace Inferno
         {
             return Observable.CombineLatest(
                         ReactiveNotifyPropertyChangedExtensions
-            .SubscribeToExpressionChain<TSender, object>(This, property1, false, false),
+                            .SubscribeToExpressionChain<TSender, object>(This, property1, false, false),
                         ReactiveNotifyPropertyChangedExtensions
-            .SubscribeToExpressionChain<TSender, object>(This, property2, false, false),
+                            .SubscribeToExpressionChain<TSender, object>(This, property2, false, false),
                         ReactiveNotifyPropertyChangedExtensions
-            .SubscribeToExpressionChain<TSender, object>(This, property3, false, false),
+                            .SubscribeToExpressionChain<TSender, object>(This, property3, false, false),
                         ReactiveNotifyPropertyChangedExtensions
-            .SubscribeToExpressionChain<TSender, object>(This, property4, false, false),
+                            .SubscribeToExpressionChain<TSender, object>(This, property4, false, false),
                         ReactiveNotifyPropertyChangedExtensions
-            .SubscribeToExpressionChain<TSender, object>(This, property5, false, false),
+                            .SubscribeToExpressionChain<TSender, object>(This, property5, false, false),
                         ReactiveNotifyPropertyChangedExtensions
-            .SubscribeToExpressionChain<TSender, object>(This, property6, false, false),
+                            .SubscribeToExpressionChain<TSender, object>(This, property6, false, false),
                         ReactiveNotifyPropertyChangedExtensions
-            .SubscribeToExpressionChain<TSender, object>(This, property7, false, false),
+                            .SubscribeToExpressionChain<TSender, object>(This, property7, false, false),
                         ReactiveNotifyPropertyChangedExtensions
-            .SubscribeToExpressionChain<TSender, object>(This, property8, false, false),
+                            .SubscribeToExpressionChain<TSender, object>(This, property8, false, false),
                         ReactiveNotifyPropertyChangedExtensions
-            .SubscribeToExpressionChain<TSender, object>(This, property9, false, false),
+                            .SubscribeToExpressionChain<TSender, object>(This, property9, false, false),
                         ReactiveNotifyPropertyChangedExtensions
-            .SubscribeToExpressionChain<TSender, object>(This, property10, false, false),
+                            .SubscribeToExpressionChain<TSender, object>(This, property10, false, false),
                         ReactiveNotifyPropertyChangedExtensions
-            .SubscribeToExpressionChain<TSender, object>(This, property11, false, false),
+                            .SubscribeToExpressionChain<TSender, object>(This, property11, false, false),
                         ReactiveNotifyPropertyChangedExtensions
-            .SubscribeToExpressionChain<TSender, object>(This, property12, false, false),
-                    selector
-);
+                            .SubscribeToExpressionChain<TSender, object>(This, property12, false, false),
+                        selector);
         }
     }
 

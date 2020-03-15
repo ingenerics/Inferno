@@ -14,7 +14,7 @@ namespace Inferno
     public class CreatesCommandBindingViaEvent : ICreatesCommandBinding
     {
         // NB: These are in priority order
-        private static readonly List<(string name, Type type)> defaultEventsToBind = new List<(string name, Type type)>
+        private static readonly List<(string name, Type type)> _defaultEventsToBind = new List<(string name, Type type)>
         {
             ("Click", typeof(EventArgs)),
             ("TouchUpInside", typeof(EventArgs)),
@@ -29,7 +29,7 @@ namespace Inferno
                 return 5;
             }
 
-            return defaultEventsToBind.Any(x =>
+            return _defaultEventsToBind.Any(x =>
             {
                 var ei = type.GetRuntimeEvent(x.name);
                 return ei != null;
@@ -45,7 +45,7 @@ namespace Inferno
             }
 
             var type = target.GetType();
-            var eventInfo = defaultEventsToBind
+            var eventInfo = _defaultEventsToBind
                 .Select(x => new { EventInfo = type.GetRuntimeEvent(x.name), Args = x.type })
                 .FirstOrDefault(x => x.EventInfo != null);
 

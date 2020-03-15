@@ -10,19 +10,14 @@ namespace Inferno
 
         public ChainedComparer(IComparer<T> parent, Comparison<T> comparison)
         {
-            if (comparison == null)
-            {
-                throw new ArgumentNullException(nameof(comparison));
-            }
-
             _parent = parent;
-            _inner = comparison;
+            _inner = comparison ?? throw new ArgumentNullException(nameof(comparison));
         }
 
         /// <inheritdoc />
         public int Compare(T x, T y)
         {
-            int parentResult = _parent == null ? 0 : _parent.Compare(x, y);
+            var parentResult = _parent?.Compare(x, y) ?? 0;
 
             return parentResult != 0 ? parentResult : _inner(x, y);
         }

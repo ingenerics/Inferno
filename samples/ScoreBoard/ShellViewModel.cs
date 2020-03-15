@@ -17,7 +17,7 @@ namespace ScoreBoard
 
             this.WhenInitialized(disposables =>
             {
-                this.ActiveItem.CloseCommand
+                ActiveItem.CloseCommand
                     .Log("Requested close application")
                     .SelectMany(_ => AskConfirmation())
                     .SubscribeLogger("Confirmed close application")

@@ -10,11 +10,11 @@ namespace Inferno
     /// </summary>
     public static class CommandBinder
     {
-        private static ICommandBinderImplementation binderImplementation;
+        private static ICommandBinderImplementation _binderImplementation;
 
         internal static void Initialize(ICommandBinderImplementation commandBinderImplementation)
         {
-            binderImplementation = commandBinderImplementation ?? throw new ArgumentNullException(nameof(commandBinderImplementation));
+            _binderImplementation = commandBinderImplementation ?? throw new ArgumentNullException(nameof(commandBinderImplementation));
         }
 
         /// <summary>
@@ -49,7 +49,7 @@ namespace Inferno
             where TView : class, IViewFor<TViewModel>
             where TProp : ICommand
         {
-            return binderImplementation.BindCommand(viewModel, view, propertyName, controlName, withParameter, toEvent);
+            return _binderImplementation.BindCommand(viewModel, view, propertyName, controlName, withParameter, toEvent);
         }
 
         /// <summary>
@@ -80,7 +80,7 @@ namespace Inferno
             where TView : class, IViewFor<TViewModel>
             where TProp : ICommand
         {
-            return binderImplementation.BindCommand(viewModel, view, propertyName, controlName, toEvent);
+            return _binderImplementation.BindCommand(viewModel, view, propertyName, controlName, toEvent);
         }
 
         /// <summary>
@@ -115,7 +115,7 @@ namespace Inferno
             where TView : class, IViewFor<TViewModel>
             where TProp : ICommand
         {
-            return binderImplementation.BindCommand(viewModel, view, propertyName, controlName, withParameter, toEvent);
+            return _binderImplementation.BindCommand(viewModel, view, propertyName, controlName, withParameter, toEvent);
         }
     }
 }

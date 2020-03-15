@@ -51,21 +51,6 @@ namespace Inferno.DialogManagement.Views
             return itemsControl;
         }
 
-        private static object CreateDialogContent(ItemsControl buttons, CompositionControl host)
-        {
-            var dock = new DockPanel
-            {
-                Focusable = false,
-                LastChildFill = true,
-                Margin = new Thickness(20, 20, 20, 20)
-            };
-
-            dock.Children.Add(buttons);
-            dock.Children.Add(host);
-
-            return dock;
-        }
-
         private static ItemsPanelTemplate GetItemsPanelTemplate()
         {
             FrameworkElementFactory itemsPanel = new FrameworkElementFactory(typeof(StackPanel));
@@ -96,6 +81,21 @@ namespace Inferno.DialogManagement.Views
             template.VisualTree = button;
             template.Seal();
             return template;
+        }
+
+        private static object CreateDialogContent(ItemsControl buttons, CompositionControl host)
+        {
+            var dock = new DockPanel
+            {
+                Focusable = false,
+                LastChildFill = true,
+                Margin = new Thickness(20, 20, 20, 20)
+            };
+
+            dock.Children.Add(buttons);
+            dock.Children.Add(host);
+
+            return dock;
         }
 
         public ItemsControl Buttons

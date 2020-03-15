@@ -19,16 +19,16 @@ namespace Inferno
             if (factories == null) throw new ArgumentNullException(nameof(factories));
 
             _notifyFactoryCache =
-            new MemoizingMRUCache<(Type senderType, string propertyName, bool beforeChange), ICreatesObservableForProperty>(
-                (t, _) =>
-                {
-                    return factories
-                        .Aggregate((score: 0, binding: (ICreatesObservableForProperty)null), (acc, x) =>
-                        {
-                            int score = x.GetAffinityForObject(t.senderType, t.propertyName, t.beforeChange);
-                            return score > acc.score ? (score, x) : acc;
-                        }).binding;
-                }, RxApp.BigCacheLimit);
+                new MemoizingMRUCache<(Type senderType, string propertyName, bool beforeChange), ICreatesObservableForProperty>(
+                    (t, _) =>
+                    {
+                        return factories
+                            .Aggregate((score: 0, binding: (ICreatesObservableForProperty)null), (acc, x) =>
+                            {
+                                int score = x.GetAffinityForObject(t.senderType, t.propertyName, t.beforeChange);
+                                return score > acc.score ? (score, x) : acc;
+                            }).binding;
+                    }, RxApp.BigCacheLimit);
         }
 
         /// <summary>

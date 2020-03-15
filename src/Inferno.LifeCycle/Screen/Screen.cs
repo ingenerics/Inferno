@@ -187,10 +187,6 @@ namespace Inferno
             {
                 await conductor.CloseItemAsync(this, CancellationToken.None);
             }
-
-            //var closeAction = PlatformProvider.Current.GetViewCloseAction(this, Views.Values, dialogResult);
-
-            //await Execute.OnUIThreadAsync(async () => await closeAction(CancellationToken.None));
         }
 
         #endregion Customizable LifeCycle

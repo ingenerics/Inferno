@@ -194,11 +194,11 @@ namespace Inferno
             where TObj : class, IReactiveObject
         {
             result = source.ObservableToProperty(
-                                                 target,
-                                                 property,
-                                                 initialValue,
-                                                 deferSubscription,
-                                                 scheduler);
+                 target,
+                 property,
+                 initialValue,
+                 deferSubscription,
+                 scheduler);
 
             return result;
         }
@@ -252,12 +252,12 @@ namespace Inferno
             Contract.Requires(property != null);
 
             return new RxPropertyHelper<TRet>(
-                                                        observable,
-                                                        _ => target.RaisingPropertyChanged(property),
-                                                        _ => target.RaisingPropertyChanging(property),
-                                                        initialValue,
-                                                        deferSubscription,
-                                                        scheduler);
+                observable,
+                _ => target.RaisingPropertyChanged(property),
+                _ => target.RaisingPropertyChanging(property),
+                initialValue,
+                deferSubscription,
+                scheduler);
         }
     }
 }

@@ -16,32 +16,32 @@ namespace Inferno
     /// </summary>
     public static class Reflection
     {
-        private static readonly ExpressionRewriter expressionRewriter = new ExpressionRewriter();
+        private static readonly ExpressionRewriter ExpressionRewriter = new ExpressionRewriter();
 
         private static readonly MemoizingMRUCache<string, Type> typeCache = new MemoizingMRUCache<string, Type>(
             (type, _) =>
             {
                 return Type.GetType(
-                                    type,
-                                    assemblyName =>
-                                    {
-                                        var assembly = AppDomain.CurrentDomain.GetAssemblies().FirstOrDefault(z => z.FullName == assemblyName.FullName);
-                                        if (assembly != null)
-                                        {
-                                            return assembly;
-                                        }
+                            type,
+                            assemblyName =>
+                            {
+                                var assembly = AppDomain.CurrentDomain.GetAssemblies().FirstOrDefault(z => z.FullName == assemblyName.FullName);
+                                if (assembly != null)
+                                {
+                                    return assembly;
+                                }
 
-                                        try
-                                        {
-                                            return Assembly.Load(assemblyName);
-                                        }
-                                        catch
-                                        {
-                                            return null;
-                                        }
-                                    },
-                                    null,
-                                    false);
+                                try
+                                {
+                                    return Assembly.Load(assemblyName);
+                                }
+                                catch
+                                {
+                                    return null;
+                                }
+                            },
+                            null,
+                            false);
             },
             20);
 
@@ -52,7 +52,7 @@ namespace Inferno
         /// <returns>The rewritten expression.</returns>
         public static Expression Rewrite(Expression expression)
         {
-            return expressionRewriter.Visit(expression);
+            return ExpressionRewriter.Visit(expression);
         }
 
         /// <summary>

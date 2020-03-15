@@ -6,10 +6,10 @@ using System.Windows;
 namespace Inferno
 {
     /*
+     * From MSDN https://docs.microsoft.com/en-us/dotnet/framework/wpf/advanced/object-lifetime-events:
      * The Loaded event is raised as a coordinated effort throughout the entire element tree (specifically, the logical tree).
      * When all elements in the tree are in a state where they are considered loaded, the Loaded event is first raised on the root element.
      * The Loaded event is then raised successively on each child element.
-     * Ref MSDN https://docs.microsoft.com/en-us/dotnet/framework/wpf/advanced/object-lifetime-events
      */
 
     /// <summary>

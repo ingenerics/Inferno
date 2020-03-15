@@ -229,7 +229,7 @@ namespace Inferno
             d.SetValue(ContextProperty, value);
         }
 
-        static void OnModelChanged(DependencyObject targetLocation, DependencyPropertyChangedEventArgs args)
+        private static void OnModelChanged(DependencyObject targetLocation, DependencyPropertyChangedEventArgs args)
         {
             if (args.OldValue == args.NewValue)
             {
@@ -258,7 +258,7 @@ namespace Inferno
             }
         }
 
-        static void OnContextChanged(DependencyObject targetLocation, DependencyPropertyChangedEventArgs e)
+        private static void OnContextChanged(DependencyObject targetLocation, DependencyPropertyChangedEventArgs e)
         {
             if (e.OldValue == e.NewValue)
             {
@@ -285,7 +285,7 @@ namespace Inferno
             ViewModelBinder.Bind(model, view);
         }
 
-        static bool SetContentProperty(object targetLocation, object view)
+        private static bool SetContentProperty(object targetLocation, object view)
         {
             if (view is FrameworkElement fe && fe.Parent != null)
             {
@@ -295,7 +295,7 @@ namespace Inferno
             return SetContentPropertyCore(targetLocation, view);
         }
 
-        static bool SetContentPropertyCore(object targetLocation, object view)
+        private static bool SetContentPropertyCore(object targetLocation, object view)
         {
             try
             {

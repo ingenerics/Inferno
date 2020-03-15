@@ -184,8 +184,8 @@ namespace Inferno
 
             public WindowConductor(object model, Window view)
             {
-                this._model = model;
-                this._view = view;
+                _model = model;
+                _view = view;
             }
 
             public async Task InitializeAsync()
@@ -246,10 +246,7 @@ namespace Inferno
 
             private async void Closing(object sender, CancelEventArgs e)
             {
-                if (e.Cancel)
-                {
-                    return;
-                }
+                if (e.Cancel) return;
 
                 var guard = (IGuardClose)_model;
 
@@ -267,8 +264,7 @@ namespace Inferno
 
                 var canClose = await guard.CanCloseAsync(CancellationToken.None);
 
-                if (!canClose)
-                    return;
+                if (!canClose) return;
 
                 _actuallyClosing = true;
 

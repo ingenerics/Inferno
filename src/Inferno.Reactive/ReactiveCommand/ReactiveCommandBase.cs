@@ -86,10 +86,7 @@ namespace Inferno
         /// command creation, as well as the current execution status of the command. A command that is currently executing
         /// will always yield <c>false</c> from this observable, even if the <c>canExecute</c> pipeline is currently <c>true</c>.
         /// </remarks>
-        public abstract IObservable<bool> CanExecute
-        {
-            get;
-        }
+        public abstract IObservable<bool> CanExecute { get; }
 
         /// <summary>
         /// Gets an observable whose value indicates whether the command is currently executing.
@@ -98,10 +95,7 @@ namespace Inferno
         /// This observable can be particularly useful for updating UI, such as showing an activity indicator whilst a command
         /// is executing.
         /// </remarks>
-        public abstract IObservable<bool> IsExecuting
-        {
-            get;
-        }
+        public abstract IObservable<bool> IsExecuting { get; }
 
         /// <summary>
         /// Gets an observable that ticks any exceptions in command execution logic.
@@ -111,10 +105,7 @@ namespace Inferno
         /// down. Therefore, you will always want to subscribe to this observable if you expect errors could occur (e.g. if
         /// your command execution includes network activity).
         /// </remarks>
-        public abstract IObservable<Exception> ThrownExceptions
-        {
-            get;
-        }
+        public abstract IObservable<Exception> ThrownExceptions { get; }
 
         /// <inheritdoc />
         public void Dispose()

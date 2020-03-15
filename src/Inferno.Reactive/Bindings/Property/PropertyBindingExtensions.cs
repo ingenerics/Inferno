@@ -10,11 +10,11 @@ namespace Inferno
     /// </summary>
     public static class PropertyBindingExtensions
     {
-        private static readonly IPropertyBinderImplementation binderImplementation;
+        private static readonly IPropertyBinderImplementation _binderImplementation;
 
         static PropertyBindingExtensions()
         {
-            binderImplementation = new PropertyBinderImplementation();
+            _binderImplementation = new PropertyBinderImplementation();
         }
 
         /// <summary>
@@ -44,7 +44,7 @@ namespace Inferno
         /// An optional <see cref="IBindingTypeConverter"/> to use when converting from the
         /// viewModel to view property.
         /// </param>
-        /// <param name="viewToVMConverterOverride">
+        /// <param name="viewToVmConverterOverride">
         /// An optional <see cref="IBindingTypeConverter"/> to use when converting from the
         /// view to viewModel property.
         /// </param>
@@ -59,11 +59,11 @@ namespace Inferno
                 Expression<Func<TView, TVProp>> viewProperty,
                 object conversionHint = null,
                 IBindingTypeConverter vmToViewConverterOverride = null,
-                IBindingTypeConverter viewToVMConverterOverride = null)
+                IBindingTypeConverter viewToVmConverterOverride = null)
             where TViewModel : class
             where TView : class, IViewFor
         {
-            return binderImplementation.Bind(
+            return _binderImplementation.Bind(
                          viewModel,
                          view,
                          vmProperty,
@@ -71,7 +71,7 @@ namespace Inferno
                          (IObservable<Unit>)null,
                          conversionHint,
                          vmToViewConverterOverride,
-                         viewToVMConverterOverride);
+                         viewToVmConverterOverride);
         }
 
         /// <summary>
@@ -111,7 +111,7 @@ namespace Inferno
         /// An optional <see cref="IBindingTypeConverter"/> to use when converting from the
         /// viewModel to view property.
         /// </param>
-        /// <param name="viewToVMConverterOverride">
+        /// <param name="viewToVmConverterOverride">
         /// An optional <see cref="IBindingTypeConverter"/> to use when converting from the
         /// view to viewModel property.
         /// </param>
@@ -127,10 +127,10 @@ namespace Inferno
                 IObservable<TDontCare> signalViewUpdate,
                 object conversionHint = null,
                 IBindingTypeConverter vmToViewConverterOverride = null,
-                IBindingTypeConverter viewToVMConverterOverride = null)
+                IBindingTypeConverter viewToVmConverterOverride = null)
             where TViewModel : class
             where TView : class, IViewFor =>
-            binderImplementation.Bind(viewModel, view, vmProperty, viewProperty, signalViewUpdate, conversionHint, vmToViewConverterOverride, viewToVMConverterOverride);
+            _binderImplementation.Bind(viewModel, view, vmProperty, viewProperty, signalViewUpdate, conversionHint, vmToViewConverterOverride, viewToVmConverterOverride);
 
         /// <summary>
         /// Binds the specified view model property to the given view property.
@@ -171,7 +171,7 @@ namespace Inferno
             Func<TVMProp, TVProp> vmToViewConverter,
             Func<TVProp, TVMProp> viewToVmConverter)
             where TViewModel : class
-            where TView : class, IViewFor => binderImplementation.Bind(viewModel, view, vmProperty, viewProperty, (IObservable<Unit>)null, vmToViewConverter, viewToVmConverter);
+            where TView : class, IViewFor => _binderImplementation.Bind(viewModel, view, vmProperty, viewProperty, (IObservable<Unit>)null, vmToViewConverter, viewToVmConverter);
 
         /// <summary>
         /// Binds the specified view model property to the given view property.
@@ -224,7 +224,7 @@ namespace Inferno
             where TViewModel : class
             where TView : class, IViewFor
         {
-            return binderImplementation.Bind(viewModel, view, vmProperty, viewProperty, signalViewUpdate, vmToViewConverter, viewToVmConverter);
+            return _binderImplementation.Bind(viewModel, view, vmProperty, viewProperty, signalViewUpdate, vmToViewConverter, viewToVmConverter);
         }
 
         /// <summary>
@@ -273,7 +273,7 @@ namespace Inferno
             where TViewModel : class
             where TView : class, IViewFor
         {
-            return binderImplementation.OneWayBind(
+            return _binderImplementation.OneWayBind(
                 viewModel,
                 view,
                 vmProperty,
@@ -321,7 +321,7 @@ namespace Inferno
             where TViewModel : class
             where TView : class, IViewFor
         {
-            return binderImplementation.OneWayBind(viewModel, view, vmProperty, viewProperty, selector);
+            return _binderImplementation.OneWayBind(viewModel, view, vmProperty, viewProperty, selector);
         }
 
         /// <summary>
@@ -356,7 +356,7 @@ namespace Inferno
             IBindingTypeConverter vmToViewConverterOverride = null)
             where TTarget : class
         {
-            return binderImplementation.BindTo(@this, target, property, conversionHint, vmToViewConverterOverride);
+            return _binderImplementation.BindTo(@this, target, property, conversionHint, vmToViewConverterOverride);
         }
     }
 }

@@ -78,13 +78,13 @@ namespace Inferno
         /// <param name="dependencyResolver"></param>
         protected virtual void AttachProperties(IDependencyResolver dependencyResolver)
         {
-            View.Logger = (ILogger)dependencyResolver.GetInstance<ILogger>();
-            View.ViewLocator = (IViewLocator)dependencyResolver.GetInstance<IViewLocator>();
-            View.ViewModelBinder = (IViewModelBinder)dependencyResolver.GetInstance<IViewModelBinder>();
+            View.Logger = dependencyResolver.GetInstance<ILogger>();
+            View.ViewLocator = dependencyResolver.GetInstance<IViewLocator>();
+            View.ViewModelBinder = dependencyResolver.GetInstance<IViewModelBinder>();
         }
 
         /// <summary>
-        /// Override to tell the framework where to find assemblies to inspect for views, etc.
+        /// Override to tell the framework where to find assemblies to inspect for views.
         /// </summary>
         /// <returns>A list of assemblies to inspect.</returns>
         protected virtual AssemblySource SelectAssemblies()
