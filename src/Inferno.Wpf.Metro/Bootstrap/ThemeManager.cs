@@ -10,7 +10,7 @@ namespace Inferno
         private readonly ResourceDictionary _accent;
         private readonly ResourceDictionary _theme;
 
-        public ThemeManager(MahAppsTheme theme, MahAppsAccent accent)
+        public ThemeManager(MahAppsTheme theme, MahAppsAccent accent, IResourceManager iconManager)
         {
             CurrentTheme = theme;
             CurrentAccent = accent;
@@ -26,12 +26,14 @@ namespace Inferno
                 _accent,
                 _theme,
             };
+
+            _themeResources.AddRange(iconManager.GetResources());
         }
 
         public MahAppsTheme CurrentTheme { get; private set; }
         public MahAppsAccent CurrentAccent { get; private set; }
 
-        public List<ResourceDictionary> GetThemeResources() => _themeResources;
+        public List<ResourceDictionary> GetResources() => _themeResources;
 
         public void ChangeAppStyle(MahAppsTheme theme, MahAppsAccent accent)
         {

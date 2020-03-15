@@ -7,6 +7,8 @@ namespace Inferno.DialogManagement.Views
 {
     public class DialogView<TChoice> : RxWindow<IDialogViewModel<TChoice>>
     {
+        public static DialogTypeToIconTemplateConverter DialogTypeToIconTemplateConverter = new DialogTypeToIconTemplateConverter();
+
         public DialogView()
         {
             Buttons = CreateButtons();
@@ -34,6 +36,12 @@ namespace Inferno.DialogManagement.Views
                         viewModel => viewModel.ButtonClickCommand,
                         view => view.ButtonClickCommand)
                     .DisposeWith(disposables);
+
+                this.OneWayBind(ViewModel,
+                        viewModel => viewModel.DialogType,
+                        view => view.IconTemplate,
+                        vmToViewConverterOverride: DialogTypeToIconTemplateConverter)
+                    .DisposeWith(disposables);
             });
         }
 
@@ -51,6 +59,38 @@ namespace Inferno.DialogManagement.Views
             return itemsControl;
         }
 
+        private static ItemsPanelTemplate GetItemsPanelTemplate()
+        {
+            var itemsPanel = new FrameworkElementFactory(typeof(StackPanel));
+
+            itemsPanel.SetValue(Panel.IsItemsHostProperty, true);
+            itemsPanel.SetValue(StackPanel.OrientationProperty, Orientation.Horizontal);
+
+            var template = new ItemsPanelTemplate();
+
+            template.VisualTree = itemsPanel;
+            template.Seal();
+            return template;
+        }
+
+        private static DataTemplate GetItemTemplate()
+        {
+            var template = new DataTemplate();
+
+            var button = new FrameworkElementFactory(typeof(Button));
+            button.SetBinding(Button.ContentProperty, new Binding(nameof(ButtonContext<ButtonChoice>.Choice)));
+            button.SetBinding(Button.IsCancelProperty, new Binding(nameof(ButtonContext<ButtonChoice>.IsCancel)));
+            button.SetBinding(Button.IsDefaultProperty, new Binding(nameof(ButtonContext<ButtonChoice>.IsDefault)));
+            button.SetBinding(Button.CommandProperty, new Binding(nameof(ButtonClickCommand)) { RelativeSource = new RelativeSource(RelativeSourceMode.FindAncestor) { AncestorLevel = 1, AncestorType = typeof(DialogView<TChoice>) } });
+            button.SetBinding(Button.CommandParameterProperty, new Binding());
+            button.SetValue(Button.WidthProperty, 75.0);
+            button.SetValue(Button.MarginProperty, new Thickness(10, 10, 10, 10));
+
+            template.VisualTree = button;
+            template.Seal();
+            return template;
+        }
+
         private static object CreateDialogContent(ItemsControl buttons, CompositionControl host)
         {
             var dock = new DockPanel
@@ -64,38 +104,6 @@ namespace Inferno.DialogManagement.Views
             dock.Children.Add(host);
 
             return dock;
-        }
-
-        private static ItemsPanelTemplate GetItemsPanelTemplate()
-        {
-            FrameworkElementFactory itemsPanel = new FrameworkElementFactory(typeof(StackPanel));
-
-            itemsPanel.SetValue(Panel.IsItemsHostProperty, true);
-            itemsPanel.SetValue(StackPanel.OrientationProperty, Orientation.Horizontal);
-
-            ItemsPanelTemplate template = new ItemsPanelTemplate();
-
-            template.VisualTree = itemsPanel;
-            template.Seal();
-            return template;
-        }
-
-        private static DataTemplate GetItemTemplate()
-        {
-            DataTemplate template = new DataTemplate();
-
-            FrameworkElementFactory button = new FrameworkElementFactory(typeof(Button));
-            button.SetBinding(Button.ContentProperty, new Binding(nameof(ButtonContext<ButtonChoice>.Choice)));
-            button.SetBinding(Button.IsCancelProperty, new Binding(nameof(ButtonContext<ButtonChoice>.IsCancel)));
-            button.SetBinding(Button.IsDefaultProperty, new Binding(nameof(ButtonContext<ButtonChoice>.IsDefault)));
-            button.SetBinding(Button.CommandProperty, new Binding(nameof(ButtonClickCommand)) { RelativeSource = new RelativeSource(RelativeSourceMode.FindAncestor) { AncestorLevel = 1, AncestorType = typeof(DialogView<TChoice>) } });
-            button.SetBinding(Button.CommandParameterProperty, new Binding());
-            button.SetValue(Button.WidthProperty, 75.0);
-            button.SetValue(Button.MarginProperty, new Thickness(10, 10, 10, 10));
-
-            template.VisualTree = button;
-            template.Seal();
-            return template;
         }
 
         public ItemsControl Buttons

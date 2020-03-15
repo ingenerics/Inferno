@@ -1,12 +1,7 @@
-﻿using System.Collections.Generic;
-using System.Windows;
-
-namespace Inferno
+﻿namespace Inferno
 {
-    public interface IThemeManager
+    public interface IThemeManager : IResourceManager
     {
-        List<ResourceDictionary> GetThemeResources();
-
         void ChangeAppStyle(MahAppsTheme theme, MahAppsAccent accent);
     }
 }

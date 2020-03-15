@@ -4,6 +4,7 @@ using Inferno.Core.Logging;
 using SimpleInjector;
 using System.Reactive.Concurrency;
 using System.Windows;
+using Inferno.Wpf.Shared.IconManagement.Octicons;
 
 namespace ScoreBoard.Bootstrap
 {
@@ -29,7 +30,8 @@ namespace ScoreBoard.Bootstrap
             var themeManager = 
                 new ThemeManager(
                     MahAppsTheme.BaseDark, 
-                    MahAppsAccent.Steel);
+                    MahAppsAccent.Steel,
+                    new OcticonsResourceManager());
 
             container.RegisterInstance(SelectAssemblies());
             container.RegisterInstance<ILogger>(logger);

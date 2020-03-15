@@ -436,7 +436,7 @@ namespace Inferno
 
             if (view is Window window)
             {
-                ThemeManager.GetThemeResources().ForEach(window.Resources.MergedDictionaries.Add);
+                ThemeManager.GetResources().ForEach(window.Resources.MergedDictionaries.Add);
             }
 
             view = HydrateView(view);
