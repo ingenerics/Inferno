@@ -68,12 +68,7 @@ namespace Inferno
             var view = EnsureWindow(rootModel, ViewLocator.LocateForModel(rootModel, context, isDialog), isDialog);
             ViewModelBinder.Bind(rootModel, view);
 
-            if (rootModel is IShell)
-            {
-                var binding = new Binding(nameof(IShell.RequestClose)) { Mode = BindingMode.TwoWay };
-                view.SetBinding(WindowCloser.RequestCloseProperty, binding);
-            }
-            else if (rootModel is IHaveDialogResult)
+            if (rootModel is IHaveDialogResult)
             {
                 var binding = new Binding(nameof(IHaveDialogResult.DialogResult)) { Mode = BindingMode.TwoWay };
                 view.SetBinding(DialogCloser.DialogResultProperty, binding);
@@ -200,27 +195,15 @@ namespace Inferno
                         .Subscribe());
                 }
 
-                if (_model is IGuardClose guard)
+                if (_model is IGuardClose)
                 {
                     _view.Closing += Closing;
                 }
-            }
 
-            private async void Closed(object sender, EventArgs e)
-            {
-                _view.Closed -= Closed;
-                _view.Closing -= Closing;
-
-                if (_deactivateFromViewModel)
+                if (_model is IShell shell)
                 {
-                    return;
+                    shell.RequestClose += RequestClose;
                 }
-
-                var activatable = (IActivate)_model;
-
-                _deactivatingFromView = true;
-                await activatable.DeactivateAsync(true, CancellationToken.None);
-                _deactivatingFromView = false;
             }
 
             private Unit Deactivated(bool wasClosed)
@@ -237,18 +220,18 @@ namespace Inferno
 
                 _deactivateFromViewModel = true;
                 _actuallyClosing = true;
-                _view.Close();
+                RequestClose();
                 _actuallyClosing = false;
                 _deactivateFromViewModel = false;
 
                 return Unit.Default;
             }
 
+            private void RequestClose() => _view.Close();
+
             private async void Closing(object sender, CancelEventArgs e)
             {
                 if (e.Cancel) return;
-
-                var guard = (IGuardClose)_model;
 
                 if (_actuallyClosing)
                 {
@@ -262,6 +245,9 @@ namespace Inferno
 
                 await Task.Yield();
 
+                // Closing event handler is only attached when _model is IGuardClose
+                var guard = (IGuardClose)_model;
+
                 var canClose = await guard.CanCloseAsync(CancellationToken.None);
 
                 if (!canClose) return;
@@ -270,12 +256,35 @@ namespace Inferno
 
                 if (cachedDialogResult == null)
                 {
-                    _view.Close();
+                    RequestClose();
                 }
                 else if (_view.DialogResult != cachedDialogResult)
                 {
                     _view.DialogResult = cachedDialogResult;
                 }
+            }
+
+            private async void Closed(object sender, EventArgs e)
+            {
+                _view.Closed -= Closed;
+                _view.Closing -= Closing;
+
+                if (_deactivateFromViewModel)
+                {
+                    return;
+                }
+
+                if (_model is IShell shell)
+                {
+                    shell.RequestClose -= RequestClose;
+                }
+
+                // Closed event handler is only attached when _model is IActivate
+                var activatable = (IActivate)_model;
+
+                _deactivatingFromView = true;
+                await activatable.DeactivateAsync(true, CancellationToken.None);
+                _deactivatingFromView = false;
             }
         }
     }

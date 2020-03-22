@@ -1,4 +1,5 @@
-﻿using Inferno;
+﻿using System;
+using Inferno;
 using ScoreBoard.ViewModels;
 using System.Reactive.Linq;
 using System.Threading.Tasks;
@@ -36,22 +37,17 @@ namespace ScoreBoard
 
             if (dialogResult == true)
             {
-                RequestClose = true;
+                RaiseCloseRequest();
             }
 
             return dialogResult;
         }
 
-        private bool _requestClose;
-        public bool RequestClose
+        public event Action RequestClose;
+
+        private void RaiseCloseRequest()
         {
-            get => _requestClose;
-            set
-            {
-                this.RaiseAndSetIfChanged(ref _requestClose, value);
-                // Reset, so we can re-initiate close after user has cancelled.
-                this.RaiseAndSetIfChanged(ref _requestClose, false);
-            }
-        } 
+            RequestClose?.Invoke();
+        }
     }
 }
