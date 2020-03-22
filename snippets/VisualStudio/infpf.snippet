@@ -1,0 +1,45 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<CodeSnippets xmlns="http://schemas.microsoft.com/VisualStudio/2005/CodeSnippet">
+  <CodeSnippet Format="1.0.0">
+    <Header>
+      <Title>Inferno property full</Title>
+      <Description>Inserts an Inferno property</Description>
+      <Shortcut>infpf</Shortcut>
+      <SnippetTypes>
+        <SnippetType>Expansion</SnippetType>
+      </SnippetTypes>
+    </Header>
+    <Snippet>
+      <Declarations>
+        <Literal Editable="true">
+          <ID>type</ID>
+          <ToolTip>Type of field and property</ToolTip>
+          <Default>string</Default>
+        </Literal>
+        <Literal Editable="true">
+          <ID>fieldName</ID>
+          <ToolTip>Name of backing field</ToolTip>
+          <Default>myField</Default>
+        </Literal>
+        <Literal Editable="true">
+          <ID>propertyName</ID>
+          <ToolTip>Name of property</ToolTip>
+          <Default>MyProperty</Default>
+        </Literal>
+      </Declarations>
+	  <Imports>
+		<Import>
+		  <Namespace>Inferno</Namespace>
+		</Import>
+	  </Imports>
+      <Code Language="csharp" Delimiter="$">
+        <![CDATA[private $type$ $fieldName$;
+		public $type$ $propertyName$ 
+        { 
+            get => $fieldName$; 
+            set => this.RaiseAndSetIfChanged(ref $fieldName$, value); 
+        }$end$]]>
+      </Code>
+    </Snippet>
+  </CodeSnippet>
+</CodeSnippets>
