@@ -1,13 +1,10 @@
 ﻿using System;
-using System.Windows;
-using System.Windows.Controls;
-using System.Windows.Data;
 
 namespace Inferno
 {
     public class DialogTypeToIconTemplateConverter : IBindingTypeConverter
     {
-        internal static PackIcon PackIcon = new PackIcon { Width = 20, Height = 20 };
+        internal static OcticonsKindToIconTemplateConverter OcticonsKindToIconTemplateConverter = new OcticonsKindToIconTemplateConverter();
 
         public int GetAffinityForObjects(Type fromType, Type toType) => fromType == typeof(DialogType) ? 10 : 0;
 
@@ -17,54 +14,42 @@ namespace Inferno
 
             if (value is DialogType dialogType && dialogType != DialogType.None)
             {
-                var icon = IconForType(dialogType);
-                result = ToDataTemplate(icon);
+                var octiconsKind = OcticonsKindForType(dialogType);
+                return OcticonsKindToIconTemplateConverter.TryConvert(octiconsKind, toType, conversionHint, out result);
             }
 
             return true;
         }
 
-        private static Control IconForType(DialogType dialogType)
+        private static PackIconOcticonsKind OcticonsKindForType(DialogType dialogType)
         {
-            PackIconOcticonsKind octiconsIcon;
+            PackIconOcticonsKind octiconsKind;
 
             switch (dialogType)
             {
                 case DialogType.Error:
-                    octiconsIcon = PackIconOcticonsKind.CircleSlash;
+                    octiconsKind = PackIconOcticonsKind.CircleSlash;
                     break;
                 case DialogType.Information:
-                    octiconsIcon = PackIconOcticonsKind.Info;
+                    octiconsKind = PackIconOcticonsKind.Info;
                     break;
                 case DialogType.Question:
-                    octiconsIcon = PackIconOcticonsKind.Question;
+                    octiconsKind = PackIconOcticonsKind.Question;
                     break;
                 case DialogType.Warning:
-                    octiconsIcon = PackIconOcticonsKind.Alert;
+                    octiconsKind = PackIconOcticonsKind.Alert;
                     break;
                 case DialogType.Settings:
-                    octiconsIcon = PackIconOcticonsKind.Gear;
+                    octiconsKind = PackIconOcticonsKind.Gear;
                     break;
                 case DialogType.None: // TryConvert method will handle None
-                    octiconsIcon = PackIconOcticonsKind.None;
+                    octiconsKind = PackIconOcticonsKind.None;
                     break;
                 default:
-                    throw new NotImplementedException($"{nameof(IconForType)} {nameof(DialogType)}.{dialogType}");
+                    throw new NotImplementedException($"{nameof(OcticonsKindForType)} {nameof(DialogType)}.{dialogType}");
             }
 
-            return PackIcon.GetPackIcon<PackIconOcticonsControl, PackIconOcticonsKind>(octiconsIcon);
-        }
-
-        private static DataTemplate ToDataTemplate(Control icon)
-        {
-            var template = new DataTemplate();
-
-            var content = new FrameworkElementFactory(typeof(ContentControl));
-            content.SetBinding(ContentControl.ContentProperty, new Binding() { Source = icon });
-
-            template.VisualTree = content;
-            template.Seal();
-            return template;
+            return octiconsKind;
         }
     }
 }

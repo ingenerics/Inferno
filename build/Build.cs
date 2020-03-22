@@ -26,7 +26,7 @@ class Build : NukeBuild
     ///   - Microsoft VisualStudio     https://nuke.build/visualstudio
     ///   - Microsoft VSCode           https://nuke.build/vscode
 
-    public static int Main() => Execute<Build>(x => x.Test);
+    public static int Main() => Execute<Build>(x => x.PackWpf);
 
     [Parameter("Configuration to build - Default is 'Debug' (local) or 'Release' (server)")]
     readonly Configuration Configuration = IsLocalBuild ? Configuration.Debug : Configuration.Release;
@@ -40,7 +40,6 @@ class Build : NukeBuild
     AbsolutePath OutputDirectory => RootDirectory / "output";
 
     Target Clean => _ => _
-        .Before(Restore)
         .Executes(() =>
         {
             SourceDirectory.GlobDirectories("**/bin", "**/obj").ForEach(DeleteDirectory);
@@ -49,6 +48,7 @@ class Build : NukeBuild
         });
 
     Target Restore => _ => _
+        .DependsOn(Clean)
         .Executes(() =>
         {
             DotNetRestore(_ => _
@@ -75,8 +75,93 @@ class Build : NukeBuild
             DotNetTest(_ => _
                 .SetProjectFile(Solution)
                 .SetConfiguration(Configuration)
-                .EnableNoBuild()
                 .EnableNoRestore()
+                .EnableNoBuild()
                 .SetResultsDirectory(RootDirectory / ".tmp" / "testResults"));
+        });
+
+    Target PackCore => _ => _
+        .DependsOn(Test)
+        .Executes(() =>
+        {
+            DotNetPack(_ => _
+                .SetProject(SourceDirectory / "Inferno.Core" / "Inferno.Core.csproj")
+                .SetConfiguration(Configuration)
+                .EnableNoDependencies()
+                .EnableIncludeSymbols()
+                .EnableNoRestore()
+                .EnableNoBuild()
+                .SetOutputDirectory(OutputDirectory));
+        });
+
+    Target PackReactive => _ => _
+        .DependsOn(PackCore)
+        .Executes(() =>
+        {
+            DotNetPack(_ => _
+                .SetProject(SourceDirectory / "Inferno.Reactive" / "Inferno.Reactive.csproj")
+                .SetConfiguration(Configuration)
+                .EnableNoDependencies()
+                .EnableIncludeSymbols()
+                .EnableNoRestore()
+                .EnableNoBuild()
+                .SetOutputDirectory(OutputDirectory));
+        });
+
+    Target PackLifeCycle => _ => _
+        .DependsOn(PackReactive)
+        .Executes(() =>
+        {
+            DotNetPack(_ => _
+                .SetProject(SourceDirectory / "Inferno.LifeCycle" / "Inferno.LifeCycle.csproj")
+                .SetConfiguration(Configuration)
+                .EnableNoDependencies()
+                .EnableIncludeSymbols()
+                .EnableNoRestore()
+                .EnableNoBuild()
+                .SetOutputDirectory(OutputDirectory));
+        });
+
+    Target PackWpfShared => _ => _
+        .DependsOn(PackLifeCycle)
+        .Executes(() =>
+        {
+            DotNetPack(_ => _
+                .SetProject(SourceDirectory / "Inferno.Wpf.Shared" / "Inferno.Wpf.Shared.csproj")
+                .SetConfiguration(Configuration)
+                .EnableNoDependencies()
+                .EnableIncludeSymbols()
+                .EnableNoRestore()
+                .EnableNoBuild()
+                .SetOutputDirectory(OutputDirectory));
+        });
+
+    Target PackWpf => _ => _
+        .DependsOn(PackWpfShared)
+        .Executes(() =>
+        {
+            DotNetPack(_ => _
+                .SetProject(SourceDirectory / "Inferno.Wpf" / "Inferno.Wpf.csproj")
+                .SetConfiguration(Configuration)
+                .EnableNoDependencies()
+                .EnableIncludeSymbols()
+                .EnableNoRestore()
+                .EnableNoBuild()
+                .SetOutputDirectory(OutputDirectory));
+        });
+
+    Target PackWpfMetro => _ => _
+        .DependsOn(PackWpfShared)
+        .TriggeredBy(PackWpf)
+        .Executes(() =>
+        {
+            DotNetPack(_ => _
+                .SetProject(SourceDirectory / "Inferno.Wpf.Metro" / "Inferno.Wpf.Metro.csproj")
+                .SetConfiguration(Configuration)
+                .EnableNoDependencies()
+                .EnableIncludeSymbols()
+                .EnableNoRestore()
+                .EnableNoBuild()
+                .SetOutputDirectory(OutputDirectory));
         });
 }

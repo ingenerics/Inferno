@@ -6,6 +6,8 @@
     <Version>1.0.0</Version>
     <Authors>ingenerics</Authors>
     <Company>ingenerics</Company>
+    <PackageDescription>A framework designed for building reactive, composite WPF apps.</PackageDescription>
+    <PackageTags>caliburn-micro reactiveui</PackageTags>
   </PropertyGroup>
 
 </Project>
