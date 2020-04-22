@@ -5,8 +5,8 @@ namespace Inferno.Reactive.Tests
 {
     public class CommandBindingViewModel : ReactiveObject
     {
-        private ReactiveCommand<int, Unit> _Command1;
-        private ReactiveCommand<Unit, Unit> _Command2;
+        private ReactiveCommand<int, Unit> _command1;
+        private ReactiveCommand<Unit, Unit> _command2;
 
         private int _value;
 
@@ -18,14 +18,14 @@ namespace Inferno.Reactive.Tests
 
         public ReactiveCommand<int, Unit> Command1
         {
-            get => _Command1;
-            set => this.RaiseAndSetIfChanged(ref _Command1, value);
+            get => _command1;
+            set => this.RaiseAndSetIfChanged(ref _command1, value);
         }
 
         public ReactiveCommand<Unit, Unit> Command2
         {
-            get => _Command2;
-            set => this.RaiseAndSetIfChanged(ref _Command2, value);
+            get => _command2;
+            set => this.RaiseAndSetIfChanged(ref _command2, value);
         }
 
         public FakeNestedViewModel NestedViewModel { get; set; }

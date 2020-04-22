@@ -1,4 +1,5 @@
 ﻿using Inferno.Core;
+using Inferno.Core.Logging;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -12,15 +13,18 @@ namespace Inferno
     /// </summary>
     public static class ViewAwareExtensions
     {
-        private static MemoizingMRUCache<Type, ISinkForViewFetcher> _sinkFetcherCache;
+        private static ILogger _logger;
+        private static MemoizingMRUCache<Type, ILoadedForViewFetcher> _loadedFetcherCache;
 
-        internal static void Initialize(IEnumerable<ISinkForViewFetcher> sinkForViewFetchers)
+        internal static void Initialize(ILogger logger, IEnumerable<ILoadedForViewFetcher> loadedForViewFetchers)
         {
-            _sinkFetcherCache =
-                new MemoizingMRUCache<Type, ISinkForViewFetcher>(
+            _logger = logger;
+
+            _loadedFetcherCache =
+                new MemoizingMRUCache<Type, ILoadedForViewFetcher>(
                     (t, _) =>
-                        sinkForViewFetchers
-                            .Aggregate((count: 0, viewFetcher: default(ISinkForViewFetcher)), (acc, x) =>
+                        loadedForViewFetchers
+                            .Aggregate((count: 0, viewFetcher: default(ILoadedForViewFetcher)), (acc, x) =>
                             {
                                 int score = x.GetAffinityForView(t);
                                 return score > acc.count ? (score, x) : acc;
@@ -102,7 +106,7 @@ namespace Inferno
         /// It returns a list of Disposables that will be cleaned up when the View is unloaded.
         /// </param>
         /// <returns>A Disposable that cleans up this registration.</returns>
-        public static IDisposable WhenLoaded(this IViewFor item, Func<IEnumerable<IDisposable>> block)
+        public static IDisposable WhenLoaded<T>(this IViewFor<T> item, Func<IEnumerable<IDisposable>> block) where T : class
         {
             if (item == null)
             {
@@ -122,23 +126,23 @@ namespace Inferno
         /// </param>
         /// <param name="view">
         /// The IViewFor will ordinarily also host the View Model, but in the event it is not,
-        /// a class implementing <see cref="IViewFor" /> can be supplied here.
+        /// a class implementing <see cref="IViewFor&lt;T&gt;" /> can be supplied here.
         /// </param>
         /// <returns>A Disposable that cleans up this registration.</returns>
-        public static IDisposable WhenLoaded(this IViewFor item, Func<IEnumerable<IDisposable>> block, IViewFor view)
+        public static IDisposable WhenLoaded<T>(this IViewFor<T> item, Func<IEnumerable<IDisposable>> block, IViewFor<T> view) where T : class
         {
             if (item == null)
             {
                 throw new ArgumentNullException(nameof(item));
             }
 
-            var sinkFetcher = _sinkFetcherCache.Get(item.GetType());
-            if (sinkFetcher == null)
+            var loadedFetcher = _loadedFetcherCache.Get(item.GetType());
+            if (loadedFetcher == null)
             {
-                throw new ArgumentException($"Don't know how to detect when {item.GetType().FullName} is loaded/unloaded, you may need to implement {nameof(ISinkForViewFetcher)}");
+                throw new ArgumentException($"Don't know how to detect when {item.GetType().FullName} is loaded/unloaded, you may need to implement {nameof(ILoadedForViewFetcher)}");
             }
 
-            var viewEvents = sinkFetcher.GetSinkForView(item);
+            var viewEvents = loadedFetcher.GetLoadedForView(item);
 
             var vmDisposable = Disposable.Empty;
             if ((view ?? item) is IViewFor v)
@@ -146,7 +150,11 @@ namespace Inferno
                 vmDisposable = HandleViewModelOnViewLoaded(v, viewEvents);
             }
 
-            var viewDisposable = HandleViewOnLoaded(block, viewEvents);
+            var viewDisposable =
+                typeof(IActivate).IsAssignableFrom(typeof(T)) ?
+                    HandleViewOnActivatedAndLoaded((view ?? item), block, viewEvents) :
+                    HandleViewOnLoaded(block, viewEvents);
+
             return new CompositeDisposable(vmDisposable, viewDisposable);
         }
 
@@ -161,7 +169,7 @@ namespace Inferno
         /// unloaded (i.e. "d(someObservable.Subscribe());").
         /// </param>
         /// <returns>A Disposable that cleans up this registration.</returns>
-        public static IDisposable WhenLoaded(this IViewFor item, Action<Action<IDisposable>> block)
+        public static IDisposable WhenLoaded<T>(this IViewFor<T> item, Action<Action<IDisposable>> block) where T : class
         {
             return item.WhenLoaded(block, null);
         }
@@ -178,10 +186,10 @@ namespace Inferno
         /// </param>
         /// <param name="view">
         /// The IViewFor will ordinarily also host the View Model, but in the event it is not,
-        /// a class implementing <see cref="IViewFor" /> can be supplied here.
+        /// a class implementing <see cref="IViewFor&lt;T&gt;" /> can be supplied here.
         /// </param>
         /// <returns>A Disposable that cleans up this registration.</returns>
-        public static IDisposable WhenLoaded(this IViewFor item, Action<Action<IDisposable>> block, IViewFor view)
+        public static IDisposable WhenLoaded<T>(this IViewFor<T> item, Action<Action<IDisposable>> block, IViewFor<T> view) where T : class
         {
             return item.WhenLoaded(
                 () =>
@@ -206,10 +214,10 @@ namespace Inferno
         /// </param>
         /// <param name="view">
         /// The IViewFor will ordinarily also host the View Model, but in the event it is not,
-        /// a class implementing <see cref="IViewFor" /> can be supplied here.
+        /// a class implementing <see cref="IViewFor&lt;T&gt;" /> can be supplied here.
         /// </param>
         /// <returns>A Disposable that cleans up this registration.</returns>
-        public static IDisposable WhenLoaded(this IViewFor item, Action<CompositeDisposable> block, IViewFor view = null)
+        public static IDisposable WhenLoaded<T>(this IViewFor<T> item, Action<CompositeDisposable> block, IViewFor<T> view = null) where T : class
         {
             return item.WhenLoaded(
                 () =>
@@ -237,6 +245,52 @@ namespace Inferno
                 viewDisposable);
         }
 
+        private static IDisposable HandleViewOnActivatedAndLoaded(IViewFor view, Func<IEnumerable<IDisposable>> block, IObservable<bool> viewEvents)
+        {
+            var viewVmDisposable = new SerialDisposable();
+            var viewDisposable = new SerialDisposable();
+            var vmDisposable = new SerialDisposable();
+
+            return new CompositeDisposable(
+                viewEvents.Subscribe(loaded =>
+                {
+                    if (loaded)
+                    {
+                        viewVmDisposable.Disposable = view.WhenAnyValue(x => x.ViewModel)
+                            .Select(x => x as IActivate)
+                            .Subscribe(activatable =>
+                            {
+                                if (activatable != null)
+                                {
+                                    vmDisposable.Disposable = activatable.WhenAnyValue(x => x.IsActive).Subscribe(isActive =>
+                                    {
+                                        // NB: We need to make sure to respect ordering so that the cleanup happens before we invoke block again
+                                        viewDisposable.Disposable = Disposable.Empty;
+                                        if (isActive)
+                                        {
+                                            viewDisposable.Disposable = new CompositeDisposable(block());
+                                        }
+                                    });
+                                }
+                                else
+                                {
+                                    vmDisposable.Disposable = Disposable.Empty;
+                                    viewDisposable.Disposable = Disposable.Empty;
+                                }
+                            });
+                    }
+                    else
+                    {
+                        viewVmDisposable.Disposable = Disposable.Empty;
+                        vmDisposable.Disposable = Disposable.Empty;
+                        viewDisposable.Disposable = Disposable.Empty;
+                    }
+                }),
+                viewDisposable,
+                vmDisposable,
+                viewVmDisposable);
+        }
+
         private static IDisposable HandleViewModelOnViewLoaded(IViewFor view, IObservable<bool> viewEvents)
         {
             var vmDisposable = new SerialDisposable();
@@ -247,6 +301,8 @@ namespace Inferno
                 {
                     if (loaded)
                     {
+                        _logger.LogInformation($"Binding {view.ViewModel?.GetType().ToString() ?? "null"} and {view}");
+
                         viewVmDisposable.Disposable = view.WhenAnyValue(x => x.ViewModel)
                             .Select(x => x as IViewAware)
                             .Subscribe(x =>

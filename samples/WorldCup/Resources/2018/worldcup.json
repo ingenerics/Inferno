@@ -1,0 +1,173 @@
+[{
+  "num": 61,
+  "date": "2018-07-10",
+  "time": "21:00",
+  "outcomeTeam1": {
+	  "team": {
+		  "name": "France",
+		  "code": "FRA"
+	  },
+  	  "score": 1,
+	  "score1i": 0,
+	  "scoreet": null,
+	  "scorep": null,
+	  "knockout": true,
+	  "goals": [
+		  {
+			  "name": "Samuel Umtiti",
+			  "minute": 51,
+			  "score1": 1,
+			  "score2": 0
+		  }
+	  ]
+  },
+  "outcomeTeam2": {
+	  "team": {
+		  "name": "Belgium",
+		  "code": "BEL"
+	  },
+  	  "score": 0,
+	  "scorei": 0,
+	  "scoreet": null,
+	  "scorep": null,
+	  "knockout": true,
+	  "goals": [ ]
+  },
+  "stadium": {
+    "key": "saintpetersburg",
+    "name": "Saint Petersburg Stadium"
+  },
+  "city": "Saint Petersburg",
+  "timezone": "UTC+3"
+},
+{
+  "num": 62,
+  "date": "2018-07-11",
+  "time": "21:00",
+  "outcomeTeam1": {
+	  "team": {
+		  "name": "Croatia",
+		  "code": "CRO"
+	  },
+  	  "score": 2,
+	  "scorei": 0,
+	  "scoreet": 1,
+	  "scorep": null,
+	  "knockout": true,
+	  "goals": [
+		  {
+			  "name": "Ivan Perišić",
+			  "minute": 68,
+			  "score1": 1,
+			  "score2": 1
+		  },
+		  {
+			  "name": "Mario Mandžukić",
+			  "minute": 109,
+			  "score1": 2,
+			  "score2": 1
+		  }
+
+	  ]
+  },
+  "outcomeTeam2": {
+	  "team": {
+		  "name": "England",
+		  "code": "ENG"
+	  },
+  	  "score": 1,
+	  "scorei": 1,
+	  "scoreet": 1,
+	  "scorep": null,
+	  "knockout": true,
+	  "goals": [
+		  {
+			  "name": "Kieran Trippier",
+			  "minute": 5,
+			  "score1": 0,
+			  "score2": 1
+		  }
+	  ]
+  },
+  "stadium": {
+    "key": "luzhniki",
+    "name": "Luzhniki Stadium"
+  },
+  "city": "Moscow",
+  "timezone": "UTC+3"
+},
+{
+  "num": 64,
+  "date": "2018-07-15",
+  "time": "18:00",
+  "outcomeTeam1": {
+	  "team": {
+		  "name": "France",
+		  "code": "FRA"
+	  },
+  	  "score": 4,
+	  "scorei": 2,
+	  "scoreet": null,
+	  "scorep": null,
+	  "knockout": true,
+	  "goals": [
+		  {
+			  "name": "Mario Mandžukić",
+			  "minute": 18,
+			  "score1": 1,
+			  "score2": 0,
+			  "owngoal": true
+		  },
+		  {
+			  "name": "Griezmann",
+			  "minute": 38,
+			  "score1": 2,
+			  "score2": 1,
+			  "penalty": true
+		  },
+		  {
+			  "name": "Pogba",
+			  "minute": 59,
+			  "score1": 3,
+			  "score2": 1
+		  },
+		  {
+			  "name": "Mbappé",
+			  "minute": 65,
+			  "score1": 4,
+			  "score2": 1
+		  }
+	  ]
+  },
+  "outcomeTeam2": {
+	  "team": {
+		  "name": "Croatia",
+		  "code": "CRO"
+	  },
+  	  "score": 2,
+	  "scorei": 1,
+	  "scoreet": null,
+	  "scorep": null,
+	  "knockout": true,
+	  "goals": [
+		  {
+			  "name": "Perišić",
+			  "minute": 28,
+			  "score1": 1,
+			  "score2": 1
+		  },
+		  {
+			  "name": "Mario Mandžukić",
+			  "minute": 69,
+			  "score1": 4,
+			  "score2": 2
+		  }
+	  ]
+  },
+  "stadium": {
+    "key": "luzhniki",
+    "name": "Luzhniki Stadium"
+  },
+  "city": "Moscow",
+  "timezone": "UTC+3"
+}]

@@ -11,5 +11,10 @@ namespace Inferno
         /// Tries to close this instance.
         /// </summary>
         Task TryCloseAsync();
+
+        /// <summary>
+        /// Indicates if this instance is closed (ie its lifecycle is terminated).
+        /// </summary>
+        bool IsClosed { get; }
     }
 }

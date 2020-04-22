@@ -7,12 +7,12 @@ namespace Inferno
     /// View is added or removed from the visual tree (ie loaded, resp. unloaded).
     /// This is usually only used when porting to a new UI framework.
     /// </summary>
-    public interface ISinkForViewFetcher
+    public interface ILoadedForViewFetcher
     {
         /// <summary>
-        /// Determines the priority by which the view Sink Fetcher will be able to process the view type.
+        /// Determines the priority by which the ILoadedForViewFetcher will be able to process the view type.
         /// 0 means it cannot act as a sync for the View, value larger than 0 indicates it can act as a sync for the View.
-        /// The class derived off ISinkForViewFetcher which returns the highest affinity value will be used as View Sink.
+        /// The class derived off ILoadedForViewFetcher which returns the highest affinity value will be used as fetcher.
         /// </summary>
         /// <param name="view">The type for the View.</param>
         /// <returns>The affinity value which is equal to 0 or above.</returns>
@@ -24,6 +24,6 @@ namespace Inferno
         /// </summary>
         /// <param name="view">The view to get the observable for.</param>
         /// <returns>A Observable which ticks true if the element was successfully loaded.</returns>
-        IObservable<bool> GetSinkForView(object view);
+        IObservable<bool> GetLoadedForView(object view);
     }
 }

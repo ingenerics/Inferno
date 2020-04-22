@@ -137,7 +137,7 @@ namespace Inferno
                     if (item == null)
                         return;
 
-                    item = EnsureItem(item);
+                    EnsureItem(item);
 
                     if (IsActive)
                         await ScreenExtensions.TryActivateAsync(item, cancellationToken);

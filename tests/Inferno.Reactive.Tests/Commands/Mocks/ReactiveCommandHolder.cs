@@ -1,5 +1,4 @@
 ﻿using System.Reactive;
-using Inferno.Reactive;
 
 namespace Inferno.Reactive.Tests
 {

@@ -6,21 +6,11 @@ namespace Inferno.LifeCycle.Tests
 {
     public class ConductorWithCollectionOneActiveTests
     {
-        private class StateScreen : Screen
+        public ConductorWithCollectionOneActiveTests()
         {
-            public bool IsClosed { get; private set; }
-            public bool IsClosable { get; set; }
-
-            public override Task<bool> CanCloseAsync(CancellationToken cancellationToken)
-            {
-                return Task.FromResult(IsClosable);
-            }
-
-            protected override async Task OnDeactivateAsync(bool close, CancellationToken cancellationToken)
-            {
-                await base.OnDeactivateAsync(close, cancellationToken);
-                IsClosed = close;
-            }
+            var dependencyResolver = new FakeDependencyResolverLifeCycle();
+            RxApp.Initialize(dependencyResolver);
+            RxLifeCycle.Initialize(dependencyResolver);
         }
 
         [Fact]
@@ -89,10 +79,7 @@ namespace Inferno.LifeCycle.Tests
                 IsClosable = true
             };
 
-            // ConductWith will allow conductor to activate (and initialize) the items as they are added.
-            notClosable.ConductWith(conductor);
-            closable.ConductWith(conductor);
-            // Last item is closable, some other item is not, so last item will be closed.
+            // Last item is closable, the one before that is not, so only last item will be closed.
             conductor.Items.Add(notClosable);
             conductor.Items.Add(closable);
             // Set ActiveItem so the conductor can change it.
@@ -132,13 +119,12 @@ namespace Inferno.LifeCycle.Tests
                 IsClosable = true
             };
 
-            // ConductWith will allow conductor to activate (and initialize) the items as they are added.
-            notClosable.ConductWith(conductor);
-            closable.ConductWith(conductor);
-            // Last item is closable, some other item is not, so last item will be closed.
+            // Last item is closable, the one before that is not, so no items will be closed.
             conductor.Items.Add(notClosable);
             conductor.Items.Add(closable);
-            // Set ActiveItem so the conductor can change it.
+            // ActivateWith allows synced parent-child activation.
+            notClosable.ActivateWith(conductor);
+            // ActiveItem is automatically conducted.
             conductor.ActiveItem = closable;
 
             await ((IActivate)conductor).ActivateAsync(CancellationToken.None);
@@ -163,6 +149,8 @@ namespace Inferno.LifeCycle.Tests
             await ((IActivate)conductor).ActivateAsync(CancellationToken.None);
             Assert.False(conducted.IsActive);
             Assert.NotEqual(conducted, conductor.ActiveItem);
+
+            // For OneActive the ActiveItem needs to be explicitly set for it to activate
             await conductor.ActivateItemAsync(conducted, CancellationToken.None);
             Assert.True(conducted.IsActive);
             Assert.Equal(conducted, conductor.ActiveItem);
@@ -180,7 +168,7 @@ namespace Inferno.LifeCycle.Tests
         }
 
         [Fact]
-        public void ParentItemIsSetOnAddedConductedItem()
+        public void ParentItemIsSetWhenAddingConductedItem()
         {
             var conductor = new Conductor<IScreen>.Collection.OneActive();
             var conducted = new Screen();
@@ -189,7 +177,7 @@ namespace Inferno.LifeCycle.Tests
         }
 
         [Fact]
-        public void ParentItemIsSetOnReplacedConductedItem()
+        public void ParentItemIsSetWhenReplacingConductedItem()
         {
             var conductor = new Conductor<IScreen>.Collection.OneActive();
             var originalConducted = new Screen();
@@ -210,7 +198,7 @@ namespace Inferno.LifeCycle.Tests
         }
 
         [Fact]
-        public void ParentItemIsUnsetOnRemovedConductedItem()
+        public void ParentItemIsUnsetWhenRemovingConductedItem()
         {
             var conductor = new Conductor<IScreen>.Collection.OneActive();
             var conducted = new Screen();
@@ -220,7 +208,7 @@ namespace Inferno.LifeCycle.Tests
         }
 
         [Fact]
-        public void ParentItemIsUnsetOnReplaceConductedItem()
+        public void ParentItemIsUnsetWhenReplacingConductedItem()
         {
             var conductor = new Conductor<IScreen>.Collection.OneActive();
             var conducted = new Screen();
@@ -230,5 +218,120 @@ namespace Inferno.LifeCycle.Tests
             Assert.NotEqual(conductor, conducted.Parent);
             Assert.Equal(conductor, conducted2.Parent);
         }
+
+        #region TryClose
+
+        [Fact]
+        public async Task ScreenTryCloseAsyncWillAskConductorToCloseIt()
+        {
+            // conductor conducts conducted
+            // conducted.TryCloseAsync() will ask conductor to close it
+
+            var conductor = new Conductor<IScreen>.Collection.OneActive();
+            var conducted1 = new StateScreen { IsClosable = true };
+            var conducted2 = new StateScreen { IsClosable = true };
+
+            // All items are closable
+            conductor.Items.Add(conducted1);
+            conductor.Items.Add(conducted2);
+            // ActivateWith allows synced parent-child activation.
+            conducted1.ActivateWith(conductor);
+            // ActiveItem is automatically conducted.
+            conductor.ActiveItem = conducted2;
+
+            await ((IActivate)conductor).ActivateAsync(CancellationToken.None);
+            await conducted1.TryCloseAsync();
+
+            Assert.True(conductor.IsActive);
+
+            Assert.False(conducted1.IsActive);
+            Assert.True(conducted1.IsClosed);
+
+            Assert.True(conducted2.IsActive);
+            Assert.False(conducted2.IsClosed);
+        }
+
+        [Fact]
+        public async Task ScreenDoesNotNeedToBeActiveItemToCloseIt()
+        {
+            // conductor conducts conducted
+            // conducted.TryCloseAsync() will ask conductor to close it
+
+            var conductor = new Conductor<IScreen>.Collection.OneActive();
+            var conducted1 = new StateScreen { IsClosable = true };
+            var conducted2 = new StateScreen { IsClosable = true };
+
+            // All items are closable
+            conductor.Items.Add(conducted1);
+            conductor.Items.Add(conducted2);
+            // ActivateWith allows synced parent-child activation.
+            conducted2.ActivateWith(conductor);
+            // ActiveItem is automatically conducted.
+            conductor.ActiveItem = conducted1;
+
+            await ((IActivate)conductor).ActivateAsync(CancellationToken.None);
+            await conducted2.TryCloseAsync();
+
+            Assert.False(conducted2.IsActive);
+            Assert.True(conducted2.IsClosed);
+        }
+
+        [Fact]
+        public async Task ConductorTryCloseAsyncWillAskItsConductorToCloseIt()
+        {
+            // nothing conducts conductor
+            // conductor.TryCloseAsync() will do nothing
+
+            var conductor = new Conductor<IScreen>.Collection.OneActive();
+            var conducted1 = new StateScreen { IsClosable = true };
+            var conducted2 = new StateScreen { IsClosable = true };
+
+            // All items are closable
+            conductor.Items.Add(conducted1);
+            conductor.Items.Add(conducted2);
+            conductor.ActiveItem = conducted1;
+
+            await ((IActivate)conductor).ActivateAsync(CancellationToken.None);
+            await conductor.TryCloseAsync();
+
+            Assert.True(conductor.IsActive);
+            Assert.True(conducted1.IsActive);
+            Assert.False(conducted1.IsClosed);
+        }
+
+        [Fact]
+        public async Task ConductorTryCloseAsyncWillAskItsConductorToCloseItAndItsChildren()
+        {
+            // conductor1 conducts conductor2
+            // conductor2.TryCloseAsync() will ask conductor1 to close it
+
+            var conductor1 = new Conductor<IScreen>();
+            var conductor2 = new Conductor<IScreen>.Collection.OneActive();
+
+            var conducted1 = new StateScreen { IsClosable = true };
+            var conducted2 = new StateScreen { IsClosable = true };
+
+            conductor1.ActiveItem = conductor2;
+            // All items are closable
+            conductor2.Items.Add(conducted1);
+            conductor2.Items.Add(conducted2);
+            // ActivateWith allows synced parent-child activation.
+            conducted2.ActivateWith(conductor2);
+            // ActiveItem is automatically conducted.
+            conductor2.ActiveItem = conducted1;
+
+            await ((IActivate)conductor1).ActivateAsync(CancellationToken.None);
+            await conductor2.TryCloseAsync();
+
+            Assert.True(conductor1.IsActive);
+            Assert.False(conductor2.IsActive);
+
+            Assert.False(conducted1.IsActive);
+            Assert.True(conducted1.IsClosed);
+            Assert.False(conducted2.IsActive);
+            Assert.True(conducted2.IsClosed);
+        }
+
+        #endregion TryClose
     }
 }

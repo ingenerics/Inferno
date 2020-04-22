@@ -63,8 +63,8 @@ namespace Inferno
             => conductor.DeactivateItemAsync(item, true, cancellationToken);
 
         ///<summary>
-        /// Activates a child whenever the specified parent is activated
-        /// and deactivates the child whenever the specified parent is deactivated.
+        /// Activates a child whenever the specified parent is activated.
+        /// Use with caution, it is better to use explicit <see cref="IConductor"/> implementations.
         ///</summary>
         ///<param name="child">The child to (de)activate.</param>
         ///<param name="parent">The parent whose activation triggers the child's activation.</param>
@@ -75,28 +75,25 @@ namespace Inferno
             // Note on the disposal, in a hierarchical composition we'll always want to close the child(ren) first.
             // Eg in a multilevel tree the leaf nodes will be closed first, working our way back to the root.
 
-            child.Activator.AddDisposables(
-                parent.Activator
-                    .Activated
-                    .Select(_ => child.ActivateAsync(CancellationToken.None))
-                    .Subscribe(),
-                parent.Activator
-                    .Deactivated
-                    .Select(wasClosed => child.DeactivateAsync(wasClosed, CancellationToken.None))
+            child.Activator.AddDisposable(
+                parent.WhenAnyValue(x => x.IsActive)
+                    .Where(isActive => isActive)
+                    .Select(_ => child.ActivateAsync(CancellationToken.None)) // Tasks are executed eagerly, fire and forget
                     .Subscribe()
                 );
         }
 
         ///<summary>
-        /// Activates and Deactivates a child whenever the specified parent is Activated or Deactivated.
+        /// Activates a child whenever the specified parent is activated.
+        /// Use with caution, it is better to use explicit <see cref="IConductor"/> implementations.
         ///</summary>
         ///<param name="child">The child to activate/deactivate.</param>
         ///<param name="parent">The parent whose activation/deactivation triggers the child's activation/deactivation.</param>
-        public static void ConductWith<TChild, TParent>(this TChild child, TParent parent)
+        public static void ActivateWith<TChild, TParent>(this TChild child, TParent parent)
             where TChild : IActivate
             where TParent : IActivate
         {
-            child.ActivateWith(parent);
+            ActivateWith((IActivate) child, (IActivate) parent);
         }
     }
 }

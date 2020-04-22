@@ -1,6 +1,4 @@
 ﻿using Inferno.Core;
-using Inferno.Core.Logging;
-using System;
 using System.Threading;
 using System.Threading.Tasks;
 
@@ -15,6 +13,7 @@ namespace Inferno
         private object _parent;
         private bool _isInitialized;
         private bool _isActive;
+        private bool _isClosed;
 
         /// <summary>
         /// Creates an instance of the screen.
@@ -25,13 +24,6 @@ namespace Inferno
 
             View = new ViewSink();
             Activator = new Activator();
-        }
-
-        private static ILogger _logger;
-        public static ILogger Logger
-        {
-            get => _logger;
-            set => _logger = value ?? throw new NullReferenceException($"{nameof(Screen)}.{nameof(Logger)}");
         }
 
         /// <summary>
@@ -65,22 +57,30 @@ namespace Inferno
 
         /// <summary>
         /// Indicates whether or not this instance has been initialized.
-        /// Virtualized in order to help with document oriented view models.
         /// </summary>
-        public virtual bool IsInitialized
+        public bool IsInitialized
         {
             get => _isInitialized;
-            set => this.RaiseAndSetIfChanged(ref _isInitialized, value);
+            private set => this.RaiseAndSetIfChanged(ref _isInitialized, value);
         }
 
         /// <summary>
         /// Indicates whether or not this instance is currently active.
-        /// Virtualized in order to help with document oriented view models.
         /// </summary>
-        public virtual bool IsActive
+        public bool IsActive
         {
             get => _isActive;
-            set => this.RaiseAndSetIfChanged(ref _isActive, value);
+            private set => this.RaiseAndSetIfChanged(ref _isActive, value);
+        }
+
+        /// <summary>
+        /// Indicates if this instance is closed (ie its lifecycle is terminated) and
+        /// the plumbing resources have been disposed of.
+        /// </summary>
+        public bool IsClosed
+        {
+            get => _isClosed;
+            private set => this.RaiseAndSetIfChanged(ref _isClosed, value);
         }
 
         /// <summary>
@@ -97,12 +97,15 @@ namespace Inferno
 
             if (!IsInitialized)
             {
+                this.LogInformation(this, $"Initializing { this }");
                 await OnInitializeAsync(cancellationToken);
                 IsInitialized = initialized = true;
             }
 
-            Logger.LogInformation(this, $"Activating { this }");
+            this.LogInformation(this, $"Activating { this }");
             await OnActivateAsync(cancellationToken); // Recursively called on children (when using conductors)
+
+            IsActive = true;
 
             if (initialized)
             {
@@ -112,15 +115,13 @@ namespace Inferno
 
             // Execute WhenActivated blocks
             Activator.Activate();
-
-            IsActive = true;
         }
 
         async Task IActivate.DeactivateAsync(bool close, CancellationToken cancellationToken)
         {
             if (IsActive || IsInitialized && close)
             {
-                Logger.LogInformation(this, $"Deactivating { this }");
+                this.LogInformation(this, $"Deactivating { this }");
                 await OnDeactivateAsync(close, cancellationToken);
 
                 // Dispose WhenActivated subscriptions
@@ -132,12 +133,11 @@ namespace Inferno
                 {
                     View.Dispose();
                     Activator.Dispose();
-                    Logger.LogInformation(this, $"Closed { this }");
+                    IsClosed = true;
+                    this.LogInformation(this, $"Closed { this }");
                 }
             }
         }
-
-        #endregion IActivate
 
         #region Customizable LifeCycle
 
@@ -179,7 +179,7 @@ namespace Inferno
         }
 
         /// <summary>
-        /// Tries to close this instance by asking its Parent to initiate shutdown or by asking its corresponding view to close.
+        /// Tries to close this instance by asking its Parent to initiate shutdown.
         /// </summary>
         public virtual async Task TryCloseAsync()
         {
@@ -190,6 +190,8 @@ namespace Inferno
         }
 
         #endregion Customizable LifeCycle
+
+        #endregion IActivate
 
         public override string ToString() => DisplayName ?? base.ToString();
     }

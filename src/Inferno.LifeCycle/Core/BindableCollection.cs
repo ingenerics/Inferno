@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.Collections.ObjectModel;
 using System.Collections.Specialized;
 using System.ComponentModel;
+using System.Linq;
 using System.Windows.Threading;
 
 namespace Inferno.Core
@@ -179,6 +180,13 @@ namespace Inferno.Core
         /// Adds the range.
         /// </summary>
         /// <param name = "items">The items.</param>
+        public virtual void AddRange(params T[] items)
+            => AddRange(items.AsEnumerable());
+
+        /// <summary>
+        /// Adds the range.
+        /// </summary>
+        /// <param name = "items">The items.</param>
         public virtual void AddRange(IEnumerable<T> items)
         {
             OnUIThread(() =>
@@ -198,6 +206,13 @@ namespace Inferno.Core
                 OnCollectionChanged(new NotifyCollectionChangedEventArgs(NotifyCollectionChangedAction.Reset));
             });
         }
+
+        /// <summary>
+        /// Removes the range.
+        /// </summary>
+        /// <param name = "items">The items.</param>
+        public virtual void RemoveRange(params T[] items)
+            => RemoveRange(items.AsEnumerable());
 
         /// <summary>
         /// Removes the range.

@@ -31,7 +31,7 @@ namespace ScoreBoard
             var dialogResult = 
                 await _dialogManager.ShowMessageBox(
                     "Confirm", 
-                    "Do you want to exit?", 
+                    "Are you sure you want to exit?", 
                     DialogType.Question,
                     ButtonChoice.Yes, ButtonChoice.No);
 

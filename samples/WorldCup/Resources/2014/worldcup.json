@@ -1,0 +1,162 @@
+[{
+  "num": 61,
+  "date": "2014-07-08",
+  "time": "17:00",
+  "outcomeTeam1": {
+	  "team": {
+		  "name": "Brazil",
+		  "code": "BRA"
+	  },
+  	  "score": 1,
+	  "scorei": null,
+	  "scoreet": null,
+	  "scorep": null,
+	  "knockout": true,
+	  "goals": [
+		  {
+			  "name": "Oscar",
+			  "minute": 90,
+			  "score1": 1,
+			  "score2": 7
+		  }
+	  ]
+  },
+  "outcomeTeam2": {
+	  "team": {
+		  "name": "Germany",
+		  "code": "GER"
+	  },
+  	  "score": 7,
+	  "scorei": 5,
+	  "scoreet": null,
+	  "scorep": null,
+	  "knockout": true,
+	  "goals": [
+		  {
+			  "name": "Thomas Müller",
+			  "minute": 11,
+			  "score1": 0,
+			  "score2": 1
+		  },
+		  {
+			  "name": "Miroslav Klose",
+			  "minute": 23,
+			  "score1": 0,
+			  "score2": 2
+		  },
+		  {
+			  "name": "Toni Kroos",
+			  "minute": 24,
+			  "score1": 0,
+			  "score2": 3
+		  },
+		  {
+			  "name": "Toni Kroos",
+			  "minute": 26,
+			  "score1": 0,
+			  "score2": 4
+		  },
+		  {
+			  "name": "Sami Khedira",
+			  "minute": 29,
+			  "score1": 0,
+			  "score2": 5
+		  },
+		  {
+			  "name": "Andre Schürrle",
+			  "minute": 69,
+			  "score1": 0,
+			  "score2": 6
+		  },
+		  {
+			  "name": "Andre Schürrle",
+			  "minute": 79,
+			  "score1": 0,
+			  "score2": 7
+		  }
+	  ]
+  },
+  "stadium": {
+    "key": "mineirao",
+    "name": "Estádio Mineirão"
+  },
+  "city": "Belo Horizonte",
+  "timezone": "UTC-3"
+},
+{
+  "num": 62,
+  "date": "2014-07-09",
+  "time": "17:00",
+  "outcomeTeam1": {
+	  "team": {
+		  "name": "Netherlands",
+		  "code": "NED"
+	  },
+  	  "score": 0,
+	  "scorei": null,
+	  "scoreet": 0,
+	  "scorep": 2,
+	  "knockout": true,
+	  "goals": [ ]
+  },
+  "outcomeTeam2": {
+	  "team": {
+		  "name": "Argentina",
+		  "code": "ARG"
+	  },
+  	  "score": 0,
+	  "scorei": null,
+	  "scoreet": 0,
+	  "scorep": 4,
+	  "knockout": true,
+  	  "goals": [ ]
+  },
+  "stadium": {
+    "key": "corinthians",
+    "name": "Arena Corinthians"
+  },
+  "city": "São Paulo",
+  "timezone": "UTC-3"
+},
+{
+  "num": 64,
+  "date": "2014-07-13",
+  "time": "16:00",
+  "outcomeTeam1": {
+	  "team": {
+		  "name": "Germany",
+		  "code": "GER"
+	  },
+  	  "score": 1,
+	  "scorei": null,
+	  "scoreet": 1,
+	  "scorep": null,
+	  "knockout": true,
+	  "goals": [
+		  {
+			  "name": "Mario Götze",
+			  "minute": 113,
+			  "score1": 1,
+			  "score2": 0
+		  }
+	  ]
+  },
+  "outcomeTeam2": {
+	  "team": {
+		  "name": "Argentina",
+		  "code": "ARG"
+	  },
+  	  "score": 0,
+	  "scorei": null,
+	  "scoreet": 0,
+	  "scorep": null,
+	  "knockout": true,
+	  "goals": [ ]
+  },
+  "stadium": {
+    "key": "maracana",
+    "name": "Estádio do Maracanã"
+  },
+  "city": "Rio de Janeiro",
+  "timezone": "UTC-3"
+}]

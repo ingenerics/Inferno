@@ -7,15 +7,15 @@ using FactAttribute = Xunit.WpfFactAttribute;
 
 namespace Inferno.LifeCycle.Tests
 {
-    public class WpfSinkForLoadedViewFetcherTest
+    public class WpfLoadedViewFetcherTest
     {
         [Fact]
         public void FrameworkElementIsActivatedAndDeactivated()
         {
             var uc = new WpfTestUserControl();
-            var viewEvents = new SinkForLoadedViewFetcher();
+            var viewEvents = new LoadedForViewFetcher();
 
-            var obs = viewEvents.GetSinkForView(uc);
+            var obs = viewEvents.GetLoadedForView(uc);
             obs.ToObservableChangeSet(scheduler: ImmediateScheduler.Instance).Bind(out var loaded).Subscribe();
 
             var loadedEvent = new RoutedEventArgs();
@@ -34,13 +34,13 @@ namespace Inferno.LifeCycle.Tests
         }
 
         [Fact]
-        public void IsHitTestVisibleDoesNotAddToSink()
+        public void IsHitTestVisibleDoesNotTriggerViewSink()
         {
             var uc = new WpfTestUserControl();
             uc.IsHitTestVisible = false;
-            var viewEvents = new SinkForLoadedViewFetcher();
+            var viewEvents = new LoadedForViewFetcher();
 
-            var obs = viewEvents.GetSinkForView(uc);
+            var obs = viewEvents.GetLoadedForView(uc);
             obs.ToObservableChangeSet(scheduler: ImmediateScheduler.Instance).Bind(out var loaded).Subscribe();
 
             var loadedEvent = new RoutedEventArgs();
@@ -53,7 +53,7 @@ namespace Inferno.LifeCycle.Tests
 
             uc.IsHitTestVisible = true;
 
-            // IsHitTestVisible true, we don't want this to influence our event sink.
+            // IsHitTestVisible true, we don't want this to influence our view lifecycle.
             new[] { true }.AssertAreEqual(loaded);
 
             var unloaded = new RoutedEventArgs();

@@ -1,244 +1,22 @@
-﻿using Inferno.Core;
-using Microsoft.Reactive.Testing;
+﻿using Microsoft.Reactive.Testing;
 using System;
+using System.Reactive;
 using System.Reactive.Disposables;
 using System.Reactive.Linq;
 using System.Threading;
 using System.Threading.Tasks;
-using System.Windows;
 using Xunit;
 
 namespace Inferno.LifeCycle.Tests
 {
     public class ConductorLifeCycleTests
     {
-        private class DelayedScreen : Screen
+        public ConductorLifeCycleTests()
         {
-            private readonly TestScheduler _scheduler;
-
-            // Simulate Async work that needs to be completed before activating screen.
-            protected override Task OnInitializeAsync(CancellationToken cancellationToken)
-            {
-                _scheduler.AdvanceBy(200);
-
-                return base.OnInitializeAsync(cancellationToken);
-            }
-
-            // Simulate Async work that needs to be completed before executing WhenXXX scopes.
-            protected override Task OnActivateAsync(CancellationToken cancellationToken)
-            {
-                _scheduler.AdvanceBy(100);
-
-                return base.OnActivateAsync(cancellationToken);
-            }
-
-            // Ctor positioned here to show scheduler flow chronologically
-            public DelayedScreen(TestScheduler scheduler)
-            {
-                _scheduler = scheduler;
-
-                // These scopes (WhenInitialized and WhenActivated) are typically used to hook everything up,
-                // ie. the internal plumbing of the view model. Eg which command listens to which observable, etc.
-                // The important thing in the scope of screen lifecycle is that these scopes don't block,
-                // ie. in contrast to when using await in OnInitializeAsync or OnActivateAsync, after the hookups are done
-                // these scopes will give back control to the runtime without waiting for the pipelines to do any processing or complete.
-                this.WhenInitialized(disposables =>
-                {
-                    _scheduler.AdvanceBy(5);
-                    disposables.Add(Disposable.Empty);
-                });
-
-                this.WhenActivated(disposables =>
-                {
-                    _scheduler.AdvanceBy(5);
-                    disposables.Add(Disposable.Empty);
-                });
-            }
-        }
-
-        private class FakeDelayedScreenView : FrameworkElement, IViewFor
-        {
-            public FakeDelayedScreenView(DelayedScreen screen)
-            {
-                ViewModel = screen;
-            }
-
-            public object ViewModel { get; set; }
-        }
-
-        private class DelayedConductor : Conductor<DelayedScreen>
-        {
-            private readonly TestScheduler _scheduler;
-
-            public long WhenInitializedScopeStartTime { get; private set; }
-
-            // Simulate Async work that needs to be completed before activating screen.
-            protected override Task OnInitializeAsync(CancellationToken cancellationToken)
-            {
-                _scheduler.AdvanceBy(200);
-
-                return base.OnInitializeAsync(cancellationToken);
-            }
-
-            // Simulate Async work that needs to be completed before executing WhenXXX scopes.
-            protected override Task OnActivateAsync(CancellationToken cancellationToken)
-            {
-                _scheduler.AdvanceBy(100);
-
-                return base.OnActivateAsync(cancellationToken);
-            }
-
-            // Ctor positioned here to show scheduler flow chronologically
-            public DelayedConductor(TestScheduler scheduler)
-            {
-                _scheduler = scheduler;
-
-                // These scopes (WhenInitialized and WhenActivated) are typically used to hook everything up,
-                // ie. the internal plumbing of the view model. Eg which command listens to which observable, etc.
-                // The important thing in the scope of screen lifecycle is that these scopes don't block,
-                // ie. in contrast to when using await in OnInitializeAsync or OnActivateAsync, after the hookups are done
-                // these scopes will give back control to the runtime without waiting for the pipelines to do any processing or complete.
-                this.WhenInitialized(disposables =>
-                {
-                    WhenInitializedScopeStartTime = _scheduler.Clock;
-
-                    _scheduler.AdvanceBy(5);
-                    disposables.Add(Disposable.Empty);
-                });
-
-                this.WhenActivated(disposables =>
-                {
-                    _scheduler.AdvanceBy(5);
-                    disposables.Add(Disposable.Empty);
-                });
-            }
-        }
-
-        private class FakeDelayedConductorView : FrameworkElement, IViewFor
-        {
-            public FakeDelayedConductorView(DelayedConductor conductor)
-            {
-                ViewModel = conductor;
-            }
-
-            public object ViewModel { get; set; }
-        }
-
-        [Fact]
-        public async Task ActivationCompletesWhenAllPartsHaveCompleted()
-        {
-            var scheduler = new TestScheduler();
-            var screen = new DelayedScreen(scheduler);
-            var conductor = new DelayedConductor(scheduler);
-
-            conductor.ActiveItem = screen;
-            await ((IActivate)conductor).ActivateAsync(CancellationToken.None);
-
-            Assert.Equal(620, scheduler.Clock);
-        }
-
-        [StaFact]
-        public async Task ViewIsOnlyActivatedWhenViewModelActivationHasCompleted()
-        {
-            var scheduler = new TestScheduler();
-            var screen = new DelayedScreen(scheduler);
-            var screenView = new FakeDelayedScreenView(screen);
-            var conductor = new DelayedConductor(scheduler);
-            var conductorView = new FakeDelayedConductorView(conductor);
-
-            conductor.ActiveItem = screen;
-
-            var fakeSinkForLoadedViewFetcher = new FakeSinkForLoadedViewFetcher();
-            var sinkForViewFetcher = new SinkForActivatedViewFetcher(fakeSinkForLoadedViewFetcher);
-            var isScreenViewActivated = false;
-            var isConductorViewActivated = false;
-
-            var subscriptions = new CompositeDisposable();
-
-            subscriptions.Add(
-                sinkForViewFetcher
-                    .GetSinkForView(screenView)
-                    .Do(isActive => isScreenViewActivated = isActive)
-                    .Subscribe());
-
-            subscriptions.Add(
-                sinkForViewFetcher
-                    .GetSinkForView(conductorView)
-                    .Do(isActive => isConductorViewActivated = isActive)
-                    .Subscribe());
-
-            Assert.Equal(false, isScreenViewActivated);
-            Assert.Equal(false, isConductorViewActivated);
-
-            // WPF raises the ViewLoaded event.
-            // Note this event will be raised on root and will then be raised successively on all children.
-            // Ref MSDN https://docs.microsoft.com/en-us/dotnet/framework/wpf/advanced/object-lifetime-events
-            // In other words, no need to split this up for the Conductor and the Screen.
-            fakeSinkForLoadedViewFetcher.LoadView();
-
-            Assert.Equal(false, isScreenViewActivated);
-            Assert.Equal(false, isConductorViewActivated);
-
-            // The Conductor's Conductor triggers ActivateAsync
-            await ((IActivate)conductor).ActivateAsync(CancellationToken.None);
-
-            Assert.Equal(true, isScreenViewActivated);
-            Assert.Equal(true, isConductorViewActivated);
-
-            subscriptions.Dispose();
-            fakeSinkForLoadedViewFetcher.Dispose();
-        }
-
-        [StaFact]
-        public async Task ViewIsOnlyActivatedWhenViewIsAddedToVisualTree()
-        {
-            var scheduler = new TestScheduler();
-            var screen = new DelayedScreen(scheduler);
-            var screenView = new FakeDelayedScreenView(screen);
-            var conductor = new DelayedConductor(scheduler);
-            var conductorView = new FakeDelayedConductorView(conductor);
-
-            conductor.ActiveItem = screen;
-
-            var fakeSinkForLoadedViewFetcher = new FakeSinkForLoadedViewFetcher();
-            var sinkForViewFetcher = new SinkForActivatedViewFetcher(fakeSinkForLoadedViewFetcher);
-            var isScreenViewActivated = false;
-            var isConductorViewActivated = false;
-
-            var subscriptions = new CompositeDisposable();
-
-            subscriptions.Add(
-                sinkForViewFetcher
-                    .GetSinkForView(screenView)
-                    .Do(isActive => isScreenViewActivated = isActive)
-                    .Subscribe());
-
-            subscriptions.Add(
-                sinkForViewFetcher
-                    .GetSinkForView(conductorView)
-                    .Do(isActive => isConductorViewActivated = isActive)
-                    .Subscribe());
-
-            Assert.Equal(false, isScreenViewActivated);
-            Assert.Equal(false, isConductorViewActivated);
-
-            // The Conductor's Conductor triggers ActivateAsync
-            await ((IActivate)conductor).ActivateAsync(CancellationToken.None);
-
-            Assert.Equal(false, isScreenViewActivated);
-            Assert.Equal(false, isConductorViewActivated);
-
-            // WPF raises the ViewLoaded event.
-            // Note this event will be raised on root and will then be raised successively on all children.
-            // Ref MSDN https://docs.microsoft.com/en-us/dotnet/framework/wpf/advanced/object-lifetime-events
-            // In other words, no need to split this up for the Conductor and the Screen.
-            fakeSinkForLoadedViewFetcher.LoadView();
-
-            Assert.Equal(true, isScreenViewActivated);
-            Assert.Equal(true, isConductorViewActivated);
-
-            subscriptions.Dispose();
-            fakeSinkForLoadedViewFetcher.Dispose();
+            var dependencyResolver = new FakeDependencyResolverLifeCycle();
+            dependencyResolver.ReplaceSingletons<ILoadedForViewFetcher>(new TestLoadedForViewFetcher());
+            RxApp.Initialize(dependencyResolver);
+            RxLifeCycle.Initialize(dependencyResolver);
         }
 
         /*
@@ -269,6 +47,92 @@ namespace Inferno.LifeCycle.Tests
          * bound them. Of course, observables set up in the WhenXXX scopes might still cause re-rendering, which is desired.
          */
 
+        [Fact]
+        public async Task ActivationCompletesWhenAllPartsHaveCompleted()
+        {
+            var scheduler = new TestScheduler();
+            var screen = new DelayedScreen(scheduler);
+            var conductor = new DelayedConductor(scheduler);
+
+            conductor.ActiveItem = screen;
+            await ((IActivate)conductor).ActivateAsync(CancellationToken.None);
+
+            // scheduler is passed as a stopwatch
+            Assert.Equal(610, conductor.WhenInitializedScopeStartTime);
+            // Diff is conductor's scopes (2 * 5)
+            Assert.Equal(620, scheduler.Clock);
+        }
+
+        [StaFact]
+        public async Task ViewIsOnlyActivatedWhenViewModelActivationHasCompleted()
+        {
+            var scheduler = new TestScheduler();
+            var screen = new DelayedScreen(scheduler);
+            var screenView = new FakeDelayedScreenView(screen);
+            var conductor = new DelayedConductor(scheduler);
+            var conductorView = new FakeDelayedConductorView(conductor);
+
+            conductor.ActiveItem = screen;
+
+            Assert.Equal(false, screenView.IsActivated);
+            Assert.Equal(false, conductorView.IsActivated);
+
+            // WPF raises the ViewLoaded event.
+            // Note this event will be raised on root and will then be raised successively on all children.
+            // Ref MSDN https://docs.microsoft.com/en-us/dotnet/framework/wpf/advanced/object-lifetime-events
+            conductorView.Loaded.OnNext(Unit.Default);
+            screenView.Loaded.OnNext(Unit.Default);
+
+            Assert.Equal(false, screenView.IsActivated);
+            Assert.Equal(false, conductorView.IsActivated);
+
+            // The Conductor's Conductor triggers ActivateAsync
+            await ((IActivate)conductor).ActivateAsync(CancellationToken.None);
+
+            Assert.Equal(true, screenView.IsActivated);
+            Assert.Equal(true, conductorView.IsActivated);
+
+            screenView.Unloaded.OnNext(Unit.Default);
+            conductorView.Unloaded.OnNext(Unit.Default);
+            screenView.Dispose();
+            conductorView.Dispose();
+        }
+
+        [StaFact]
+        public async Task ViewIsOnlyActivatedWhenViewIsAddedToVisualTree()
+        {
+            var scheduler = new TestScheduler();
+            var screen = new DelayedScreen(scheduler);
+            var screenView = new FakeDelayedScreenView(screen);
+            var conductor = new DelayedConductor(scheduler);
+            var conductorView = new FakeDelayedConductorView(conductor);
+
+            conductor.ActiveItem = screen;
+
+            Assert.Equal(false, screenView.IsActivated);
+            Assert.Equal(false, conductorView.IsActivated);
+
+            // The Conductor's Conductor triggers ActivateAsync
+            await ((IActivate)conductor).ActivateAsync(CancellationToken.None);
+
+            Assert.Equal(false, screenView.IsActivated);
+            Assert.Equal(false, conductorView.IsActivated);
+
+            // WPF raises the ViewLoaded event.
+            // Note this event will be raised on root and will then be raised successively on all children.
+            // Ref MSDN https://docs.microsoft.com/en-us/dotnet/framework/wpf/advanced/object-lifetime-events
+            conductorView.Loaded.OnNext(Unit.Default);
+            screenView.Loaded.OnNext(Unit.Default);
+
+            Assert.Equal(true, screenView.IsActivated);
+            Assert.Equal(true, conductorView.IsActivated);
+
+            screenView.Unloaded.OnNext(Unit.Default);
+            conductorView.Unloaded.OnNext(Unit.Default);
+            screenView.Dispose();
+            conductorView.Dispose();
+        }
+
         [StaFact]
         public async Task ConductorScopesAreOnlyExecutedAfterActiveItemIsFullyActivated()
         {
@@ -280,27 +144,98 @@ namespace Inferno.LifeCycle.Tests
                 ActiveItem = screen
             };
 
-            var fakeSinkForLoadedViewFetcher = new FakeSinkForLoadedViewFetcher();
-            var sinkForViewFetcher = new SinkForActivatedViewFetcher(fakeSinkForLoadedViewFetcher);
+            long screenFullyActivatedTime = 0; // Incl scopes
+            long conductorActivationTime = 0; // Only async
 
-            long screenActivationTime = 0;
-
-            var subscription = 
-                sinkForViewFetcher
-                .GetSinkForView(screenView)
-                .Do(_ => screenActivationTime = scheduler.Clock)
-                .Subscribe();
+            var disposables = new CompositeDisposable();
+            screen
+                .WhenAnyValue(x => x.IsFullyActivated)
+                .Do(_ => screenFullyActivatedTime = scheduler.Clock)
+                .Subscribe()
+                .DisposeWith(disposables);
+            conductor
+                .WhenAnyValue(x => x.IsActive)
+                .Do(_ => conductorActivationTime = scheduler.Clock)
+                .Subscribe()
+                .DisposeWith(disposables);
 
             // WPF raises the ViewLoaded event.
-            fakeSinkForLoadedViewFetcher.LoadView();
+            screenView.Loaded.OnNext(Unit.Default);
             // The Conductor's Conductor triggers ActivateAsync
             await ((IActivate)conductor).ActivateAsync(CancellationToken.None);
 
-            Assert.Equal(610, screenActivationTime);
+            Assert.Equal(610, screenFullyActivatedTime);
+            Assert.Equal(610, conductorActivationTime);
             Assert.Equal(610, conductor.WhenInitializedScopeStartTime);
 
-            subscription.Dispose();
-            fakeSinkForLoadedViewFetcher.Dispose();
+            disposables.Dispose();
+            screenView.Unloaded.OnNext(Unit.Default);
+            screenView.Dispose();
         }
+
+        #region TryClose
+
+        [Fact]
+        public async Task ScreenTryCloseAsyncWillAskConductorToCloseIt()
+        {
+            // conductor conducts conducted
+            // conducted.TryCloseAsync() will ask conductor to close it
+
+            var conductor = new Conductor<IScreen>();
+            var conducted = new StateScreen { IsClosable = true };
+
+            conductor.ActiveItem = conducted;
+
+            await ((IActivate)conductor).ActivateAsync(CancellationToken.None);
+            await conducted.TryCloseAsync();
+
+            Assert.True(conductor.IsActive);
+            Assert.False(conducted.IsActive);
+            Assert.True(conducted.IsClosed);
+        }
+
+        [Fact]
+        public async Task ConductorTryCloseAsyncWillAskItsConductorToCloseIt()
+        {
+            // nothing conducts conductor
+            // conductor.TryCloseAsync() will do nothing
+
+            var conductor = new Conductor<IScreen>();
+            var conducted = new StateScreen { IsClosable = true };
+
+            conductor.ActiveItem = conducted;
+
+            await ((IActivate)conductor).ActivateAsync(CancellationToken.None);
+            await conductor.TryCloseAsync();
+
+            Assert.True(conductor.IsActive);
+            Assert.True(conducted.IsActive);
+            Assert.False(conducted.IsClosed);
+        }
+
+        [Fact]
+        public async Task ConductorTryCloseAsyncWillAskItsConductorToCloseItAndItsChildren()
+        {
+            // conductor1 conducts conductor2
+            // conductor2.TryCloseAsync() will ask conductor1 to close it
+
+            var conductor1 = new Conductor<IScreen>();
+            var conductor2 = new Conductor<IScreen>();
+            var conducted = new StateScreen { IsClosable = true };
+
+            conductor1.ActiveItem = conductor2;
+            conductor2.ActiveItem = conducted;
+
+            await ((IActivate)conductor1).ActivateAsync(CancellationToken.None);
+            await conductor2.TryCloseAsync();
+
+            Assert.True(conductor1.IsActive);
+            Assert.False(conductor2.IsActive);
+
+            Assert.False(conducted.IsActive);
+            Assert.True(conducted.IsClosed);
+        }
+
+        #endregion TryClose
     }
 }

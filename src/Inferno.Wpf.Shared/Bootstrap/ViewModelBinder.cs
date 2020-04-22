@@ -1,6 +1,6 @@
-﻿using System.Windows;
-using Inferno.Core;
+﻿using Inferno.Core;
 using Inferno.Core.Logging;
+using System.Windows;
 
 namespace Inferno
 {
@@ -18,7 +18,7 @@ namespace Inferno
         /// </summary>
         public void Bind(object viewModel, DependencyObject view)
         {
-            Logger.LogInformation(this, $"Binding {view} and {viewModel}.");
+            Logger.LogInformation(this, $"Setting {viewModel} as DataContext of {view}");
 
             ((FrameworkElement)view).DataContext = viewModel;
 

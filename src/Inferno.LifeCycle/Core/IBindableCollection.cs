@@ -14,7 +14,19 @@ namespace Inferno.Core
         ///   Adds the range.
         /// </summary>
         /// <param name = "items">The items.</param>
+        void AddRange(params T[] items);
+
+        /// <summary>
+        ///   Adds the range.
+        /// </summary>
+        /// <param name = "items">The items.</param>
         void AddRange(IEnumerable<T> items);
+
+        /// <summary>
+        ///   Removes the range.
+        /// </summary>
+        /// <param name = "items">The items.</param>
+        void RemoveRange(params T[] items);
 
         /// <summary>
         ///   Removes the range.

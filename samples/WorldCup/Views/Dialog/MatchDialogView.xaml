@@ -1,0 +1,34 @@
+﻿<inferno:RxUserControl 
+    x:Class="WorldCup.Views.Dialog.MatchDialogView"
+    x:TypeArguments="local:MatchDialogViewModel"
+    xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+    xmlns:inferno="http://inferno.net"
+    xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+    xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+    xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+    xmlns:local="clr-namespace:WorldCup.ViewModels.Dialog"
+    xmlns:controls="clr-namespace:WorldCup.Views.Controls"
+    mc:Ignorable="d" 
+    d:DesignHeight="450" d:DesignWidth="800">
+    <Grid Margin="30">
+        <Grid.ColumnDefinitions>
+            <ColumnDefinition />
+            <ColumnDefinition Width="190" />
+            <ColumnDefinition />
+            <ColumnDefinition Width="190" />
+            <ColumnDefinition />
+        </Grid.ColumnDefinitions>
+        <Grid.RowDefinitions>
+            <RowDefinition Height="Auto" />
+            <RowDefinition />
+        </Grid.RowDefinitions>
+        <TextBlock x:Name="NameTeam1" Grid.Column="1" Grid.Row="0" HorizontalAlignment="Center" />
+        <TextBlock x:Name="NameTeam2" Grid.Column="3" Grid.Row="0" HorizontalAlignment="Center" />
+        <ScrollViewer Grid.Column="1" Grid.Row="1" VerticalScrollBarVisibility="Auto">
+            <controls:GoalItemsControl x:Name="GoalsTeam1" />
+        </ScrollViewer>
+        <ScrollViewer Grid.Column="3" Grid.Row="1" VerticalScrollBarVisibility="Auto">
+            <controls:GoalItemsControl x:Name="GoalsTeam2" />
+        </ScrollViewer>
+    </Grid>
+</inferno:RxUserControl>

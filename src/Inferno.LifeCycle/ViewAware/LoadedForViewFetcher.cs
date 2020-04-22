@@ -13,10 +13,10 @@ namespace Inferno
      */
 
     /// <summary>
-    /// SinkForLoadedViewFetcher is how Inferno determines which lifecycle state the FrameworkElement is in,
+    /// LoadedForViewFetcher is how Inferno determines which lifecycle state the FrameworkElement is in,
     /// if it's loaded or unloaded (ie when an element is added to, resp. removed from the visual tree).
     /// </summary>
-    public class SinkForLoadedViewFetcher : ISinkForViewFetcher
+    public class LoadedForViewFetcher : ILoadedForViewFetcher
     {
         /// <inheritdoc/>
         public int GetAffinityForView(Type view)
@@ -25,7 +25,7 @@ namespace Inferno
         }
 
         /// <inheritdoc/>
-        public IObservable<bool> GetSinkForView(object view)
+        public IObservable<bool> GetLoadedForView(object view)
         {
             var fe = view as FrameworkElement;
 

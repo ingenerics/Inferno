@@ -1,6 +1,8 @@
 ﻿using Inferno;
 using System.Reactive;
 using System.Reactive.Linq;
+using System.Threading;
+using System.Threading.Tasks;
 
 namespace ScoreBoard.ViewModels
 {
@@ -8,12 +10,6 @@ namespace ScoreBoard.ViewModels
     {
         public ScoreBoardViewModel()
         {
-            ScoreHomeTeam = new ScoreViewModel("#FF024D70") { DisplayName = nameof(ScoreHomeTeam) };
-            ScoreVisitors = new ScoreViewModel("#FF7E0E03") { DisplayName = nameof(ScoreVisitors) };
-
-            Items.Add(ScoreHomeTeam);
-            Items.Add(ScoreVisitors);
-
             this.WhenInitialized(disposables =>
             {
                 var canStartNewGame =
@@ -34,6 +30,17 @@ namespace ScoreBoard.ViewModels
                 
                 CloseCommand = ReactiveCommand.Create(() => Unit.Default).DisposeWith(disposables);
             });
+        }
+
+        protected override Task OnInitializeAsync(CancellationToken cancellationToken)
+        {
+            ScoreHomeTeam = new ScoreViewModel("#FF024D70") { DisplayName = nameof(ScoreHomeTeam) };
+            ScoreVisitors = new ScoreViewModel("#FF7E0E03") { DisplayName = nameof(ScoreVisitors) };
+
+            Items.Add(ScoreHomeTeam);
+            Items.Add(ScoreVisitors);
+
+            return Task.CompletedTask;
         }
 
         private ScoreViewModel _scoreHomeTeam;

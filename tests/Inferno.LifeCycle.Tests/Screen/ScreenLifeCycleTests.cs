@@ -1,69 +1,19 @@
-﻿using Inferno.Core;
+﻿using System.Reactive;
 using Microsoft.Reactive.Testing;
-using System;
-using System.Reactive.Disposables;
-using System.Reactive.Linq;
 using System.Threading;
 using System.Threading.Tasks;
-using System.Windows;
 using Xunit;
 
 namespace Inferno.LifeCycle.Tests
 {
     public class ScreenLifeCycleTests
     {
-        private class DelayedScreen : Screen
+        public ScreenLifeCycleTests()
         {
-            private readonly TestScheduler _scheduler;
-
-            // Simulate Async work that needs to be completed before activating screen.
-            protected override Task OnInitializeAsync(CancellationToken cancellationToken)
-            {
-                _scheduler.AdvanceBy(200);
-
-                return base.OnInitializeAsync(cancellationToken);
-            }
-
-            // Simulate Async work that needs to be completed before executing WhenXXX scopes.
-            protected override Task OnActivateAsync(CancellationToken cancellationToken)
-            {
-                _scheduler.AdvanceBy(100);
-
-                return base.OnActivateAsync(cancellationToken);
-            }
-
-            // Ctor positioned here to show scheduler flow chronologically
-            public DelayedScreen(TestScheduler scheduler)
-            {
-                _scheduler = scheduler;
-
-                // These scopes (WhenInitialized and WhenActivated) are typically used to hook everything up,
-                // ie. the internal plumbing of the view model. Eg which command listens to which observable, etc.
-                // The important thing in the scope of screen lifecycle is that these scopes don't block,
-                // ie. in contrast to when using await in OnInitializeAsync or OnActivateAsync, after the hookups are done
-                // these scopes will give back control to the runtime without waiting for the pipelines to do any processing or complete.
-                this.WhenInitialized(disposables =>
-                {
-                    _scheduler.AdvanceBy(5);
-                    disposables.Add(Disposable.Empty);
-                });
-
-                this.WhenActivated(disposables =>
-                {
-                    _scheduler.AdvanceBy(5);
-                    disposables.Add(Disposable.Empty);
-                });
-            }
-        }
-
-        private class FakeDelayedView : FrameworkElement, IViewFor
-        {
-            public FakeDelayedView(DelayedScreen screen)
-            {
-                ViewModel = screen;
-            }
-
-            public object ViewModel { get; set; }
+            var dependencyResolver = new FakeDependencyResolverLifeCycle();
+            dependencyResolver.ReplaceSingletons<ILoadedForViewFetcher>(new TestLoadedForViewFetcher());
+            RxApp.Initialize(dependencyResolver);
+            RxLifeCycle.Initialize(dependencyResolver);
         }
 
         [Fact]
@@ -74,6 +24,7 @@ namespace Inferno.LifeCycle.Tests
 
             await ((IActivate)screen).ActivateAsync(CancellationToken.None);
 
+            // scheduler is passed as a stopwatch
             Assert.Equal(310, scheduler.Clock);
         }
 
@@ -82,32 +33,22 @@ namespace Inferno.LifeCycle.Tests
         {
             var scheduler = new TestScheduler();
             var screen = new DelayedScreen(scheduler);
-            var view = new FakeDelayedView(screen);
+            var view = new FakeDelayedScreenView(screen);
 
-            var fakeSinkForLoadedViewFetcher = new FakeSinkForLoadedViewFetcher();
-            var sinkForViewFetcher = new SinkForActivatedViewFetcher(fakeSinkForLoadedViewFetcher);
-            var isViewActivated = false;
-
-            var subscription =
-                sinkForViewFetcher
-                    .GetSinkForView(view)
-                    .Do(isActive => isViewActivated = isActive)
-                    .Subscribe();
-
-            Assert.Equal(false, isViewActivated);
+            Assert.Equal(false, view.IsActivated);
 
             // WPF raises the ViewLoaded event on FrameworkElement
-            fakeSinkForLoadedViewFetcher.LoadView();
+            view.Loaded.OnNext(Unit.Default);
 
-            Assert.Equal(false, isViewActivated);
+            Assert.Equal(false, view.IsActivated);
 
             // The Screen's Conductor triggers ActivateAsync
             await ((IActivate)screen).ActivateAsync(CancellationToken.None);
 
-            Assert.Equal(true, isViewActivated);
+            Assert.Equal(true, view.IsActivated);
 
-            subscription.Dispose();
-            fakeSinkForLoadedViewFetcher.Dispose();
+            view.Unloaded.OnNext(Unit.Default);
+            view.Dispose();
         }
 
         [StaFact]
@@ -115,32 +56,71 @@ namespace Inferno.LifeCycle.Tests
         {
             var scheduler = new TestScheduler();
             var screen = new DelayedScreen(scheduler);
-            var view = new FakeDelayedView(screen);
+            var view = new FakeDelayedScreenView(screen);
 
-            var fakeSinkForLoadedViewFetcher = new FakeSinkForLoadedViewFetcher();
-            var sinkForViewFetcher = new SinkForActivatedViewFetcher(fakeSinkForLoadedViewFetcher);
-            var isViewActivated = false;
-
-            var subscription =
-                sinkForViewFetcher
-                    .GetSinkForView(view)
-                    .Do(isActive => isViewActivated = isActive)
-                    .Subscribe();
-
-            Assert.Equal(false, isViewActivated);
+            Assert.Equal(false, view.IsActivated);
 
             // The Screen's Conductor triggers ActivateAsync
             await ((IActivate)screen).ActivateAsync(CancellationToken.None);
 
-            Assert.Equal(false, isViewActivated);
+            Assert.Equal(false, view.IsActivated);
 
             // WPF raises the ViewLoaded event on FrameworkElement
-            fakeSinkForLoadedViewFetcher.LoadView();
+            view.Loaded.OnNext(Unit.Default);
 
-            Assert.Equal(true, isViewActivated);
+            Assert.Equal(true, view.IsActivated);
 
-            subscription.Dispose();
-            fakeSinkForLoadedViewFetcher.Dispose();
+            view.Unloaded.OnNext(Unit.Default);
+            view.Dispose();
+        }
+
+        [StaFact]
+        public async Task ViewIsDeactivatedWhenViewModelIsDeactivated()
+        {
+            var scheduler = new TestScheduler();
+            var screen = new DelayedScreen(scheduler);
+            var view = new FakeDelayedScreenView(screen);
+
+            Assert.Equal(false, view.IsActivated);
+
+            // WPF raises the ViewLoaded event on FrameworkElement
+            view.Loaded.OnNext(Unit.Default);
+            // The Screen's Conductor triggers ActivateAsync
+            await ((IActivate)screen).ActivateAsync(CancellationToken.None);
+
+            Assert.Equal(true, view.IsActivated);
+
+            // The Screen's Conductor triggers DeactivateAsync, without closing
+            await ((IActivate)screen).DeactivateAsync(false, CancellationToken.None);
+
+            Assert.Equal(false, view.IsActivated);
+
+            view.Unloaded.OnNext(Unit.Default);
+            view.Dispose();
+        }
+
+        [StaFact]
+        public async Task ViewIsDeactivatedWhenViewIsRemovedFromVisualTree()
+        {
+            var scheduler = new TestScheduler();
+            var screen = new DelayedScreen(scheduler);
+            var view = new FakeDelayedScreenView(screen);
+
+            Assert.Equal(false, view.IsActivated);
+
+            // WPF raises the ViewLoaded event on FrameworkElement
+            view.Loaded.OnNext(Unit.Default);
+            // The Screen's Conductor triggers ActivateAsync
+            await ((IActivate)screen).ActivateAsync(CancellationToken.None);
+
+            Assert.Equal(true, view.IsActivated);
+
+            // WPF raises the ViewUnloaded event on FrameworkElement
+            view.Unloaded.OnNext(Unit.Default);
+
+            Assert.Equal(false, view.IsActivated);
+
+            view.Dispose();
         }
     }
 }

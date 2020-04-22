@@ -40,30 +40,22 @@ namespace Inferno
         }
 
         /// <summary>
-        /// Gets a observable which will tick once when the item is initialized.
-        /// </summary>
-        /// <value>The activated.</value>
-        public IObservable<Unit> Initialized => _initialized;
-
-        /// <summary>
         /// Gets a observable which will tick every time the item is activated.
-        /// The observable will tick true when the item was initialized, and false otherwise.
         /// </summary>
         /// <value>The activated.</value>
         public IObservable<Unit> Activated => _activated;
 
         /// <summary>
-        /// Gets a observable observable which will tick every time the item is deactivated.
+        /// Gets a observable which will tick every time the item is deactivated.
         /// The observable will tick true when the item was closed after deactivation, and false otherwise.
         /// </summary>
-        /// <value>The deactivated.</value>
+        /// <value>True if the deactivated item was also closed.</value>
         public IObservable<bool> Deactivated => _deactivated;
 
         /// <summary>
         /// Gets a observable which will tick true when the item has been initialized and false otherwise.
         /// </summary>
-        /// <value>The activated.</value>
-        public IObservable<bool> IsInitialized =>
+        public IObservable<bool> HasInitialized =>
             _initialized
                 .Select(_ => true)
                 .StartWith(false)
@@ -73,11 +65,11 @@ namespace Inferno
         /// <summary>
         /// Gets a observable which will tick true when the item is activated and false otherwise.
         /// </summary>
-        /// <value>The activated.</value>
-        public IObservable<bool> IsActive =>
+        public IObservable<bool> HasActivated =>
             Observable.Merge(
                     _activated.Select(_ => true),
                     _deactivated.Select(_ => false))
+                .StartWith(false)
                 .Replay(1)
                 .RefCount();
 
@@ -113,6 +105,7 @@ namespace Inferno
 
         /// <summary>
         /// This method is called by the framework when the corresponding ViewModel is deactivated.
+        /// Call this method in unit tests to simulate a ViewModel being deactivated.
         /// </summary>
         /// <param name="close">
         /// Indicates the item is being closed after deactivation.
@@ -134,7 +127,7 @@ namespace Inferno
         }
 
         /// <summary>
-        /// Adds a action blocks to the list of registered blocks. These will called on initialization, then disposed when the activator is disposed of.
+        /// Adds action blocks to the list of registered blocks. These will be executed on initialization, then disposed when the activator is disposed of.
         /// </summary>
         /// <param name="block">The block to add.</param>
         internal void AddInitializationBlock(Func<IEnumerable<IDisposable>> block)
@@ -143,7 +136,7 @@ namespace Inferno
         }
 
         /// <summary>
-        /// Adds a action blocks to the list of registered blocks. These will called on activation, then disposed on deactivation.
+        /// Adds action blocks to the list of registered blocks. These will be executed on activation, then disposed on deactivation.
         /// </summary>
         /// <param name="block">The block to add.</param>
         internal void AddActivationBlock(Func<IEnumerable<IDisposable>> block)
@@ -159,7 +152,7 @@ namespace Inferno
         {
             _compositeDisposable.Add(disposable);
         }
-        
+
         /// <summary>
         /// Adds IDisposables, which will be disposed of when the activator is disposed of.
         /// </summary>

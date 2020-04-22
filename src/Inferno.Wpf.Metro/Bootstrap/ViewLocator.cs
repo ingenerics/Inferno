@@ -1,4 +1,7 @@
-﻿using Inferno.Core.Conventions;
+﻿using Inferno.Core;
+using Inferno.Core.Conventions;
+using Inferno.Core.Logging;
+using Inferno.DialogManagement.Views;
 using System;
 using System.Collections.Generic;
 using System.Diagnostics.Contracts;
@@ -6,9 +9,6 @@ using System.Linq;
 using System.Text.RegularExpressions;
 using System.Windows;
 using System.Windows.Controls;
-using Inferno.Core;
-using Inferno.Core.Logging;
-using Inferno.DialogManagement.Views;
 
 namespace Inferno
 {

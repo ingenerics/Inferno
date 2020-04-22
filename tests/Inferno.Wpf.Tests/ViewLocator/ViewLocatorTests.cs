@@ -1,5 +1,4 @@
-﻿using Inferno.Core;
-using Inferno.Wpf.Tests.ViewModels;
+﻿using Inferno.Wpf.Tests.ViewModels;
 using Inferno.Wpf.Tests.Views;
 using Inferno.Wpf.Tests.Views.Shared;
 using Xunit;

@@ -1,4 +1,5 @@
 ﻿using DynamicData;
+using Inferno.Testing;
 using Microsoft.Reactive.Testing;
 using System;
 using System.Collections.Generic;
@@ -9,7 +10,6 @@ using System.Reactive.Linq;
 using System.Reactive.Subjects;
 using System.Threading.Tasks;
 using System.Windows.Input;
-using Inferno.Testing;
 using Xunit;
 
 namespace Inferno.Reactive.Tests

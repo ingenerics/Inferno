@@ -4,28 +4,28 @@ namespace Inferno.Reactive.Tests
 {
     public class HostTestFixture : ReactiveObject
     {
-        private TestFixture _Child;
+        private TestFixture _child;
 
-        private NonObservableTestFixture _PocoChild;
+        private NonObservableTestFixture _pocoChild;
 
-        private int _SomeOtherParam;
+        private int _someOtherParam;
 
         public TestFixture Child
         {
-            get => _Child;
-            set => this.RaiseAndSetIfChanged(ref _Child, value);
+            get => _child;
+            set => this.RaiseAndSetIfChanged(ref _child, value);
         }
 
         public NonObservableTestFixture PocoChild
         {
-            get => _PocoChild;
-            set => this.RaiseAndSetIfChanged(ref _PocoChild, value);
+            get => _pocoChild;
+            set => this.RaiseAndSetIfChanged(ref _pocoChild, value);
         }
 
         public int SomeOtherParam
         {
-            get => _SomeOtherParam;
-            set => this.RaiseAndSetIfChanged(ref _SomeOtherParam, value);
+            get => _someOtherParam;
+            set => this.RaiseAndSetIfChanged(ref _someOtherParam, value);
         }
     }
 }

@@ -64,47 +64,6 @@ namespace Inferno
             return ShowMessageBox(title, message, dialogType, buttons);
         }
 
-        /// <summary>
-        /// Apply button behavior by UX conventions, ie the left most button is used to confirm and the right most button to cancel.
-        /// </summary>
-        /// <param name="choices"></param>
-        /// <returns></returns>
-        private ButtonContext<ButtonChoice>[] ConvertToButtons(ButtonChoice[] choices)
-        {
-            var result = new ButtonContext<ButtonChoice>[choices.Length];
-
-            if (choices == null || !choices.Any())
-            {
-                throw new ArgumentException($"{nameof(choices)} is null or empty");
-            }
-            else if (choices.Length == 1)
-            {
-                result[0] = new ButtonContext<ButtonChoice>(choices.Single(), true, false);
-            }
-            else
-            {
-                for (int i = 0; i < choices.Length; i++)
-                {
-                    var choice = choices[i];
-
-                    if (i == 0)
-                    {
-                        result[i] = new ButtonContext<ButtonChoice>(choice, true, false);
-                    }
-                    else if (i == choices.Length)
-                    {
-                        result[i] = new ButtonContext<ButtonChoice>(choice, false, true);
-                    }
-                    else
-                    {
-                        result[i] = new ButtonContext<ButtonChoice>(choice, false, false);
-                    }
-                }
-            }
-
-            return result;
-        }
-
         protected virtual IDialogSettings MessageBoxSettings => new DialogSettings
         {
             Width = 350,
@@ -114,6 +73,51 @@ namespace Inferno
         };
 
         #endregion MessageBox
+
+        #region Buttons
+
+        /// <summary>
+        /// Apply button behavior by UX conventions, ie the left most button is used to confirm and the right most button to cancel.
+        /// </summary>
+        /// <param name="choices"></param>
+        /// <returns></returns>
+        internal static ButtonContext<TChoice>[] ConvertToButtons<TChoice>(params TChoice[] choices)
+        {
+            var result = new ButtonContext<TChoice>[choices.Length];
+
+            if (choices == null || !choices.Any())
+            {
+                throw new ArgumentException($"{nameof(choices)} is null or empty");
+            }
+            else if (choices.Length == 1)
+            {
+                result[0] = new ButtonContext<TChoice>(choices.Single(), true, false);
+            }
+            else
+            {
+                for (int i = 0; i < choices.Length; i++)
+                {
+                    var choice = choices[i];
+
+                    if (i == 0)
+                    {
+                        result[i] = new ButtonContext<TChoice>(choice, true, false);
+                    }
+                    else if (i == choices.Length)
+                    {
+                        result[i] = new ButtonContext<TChoice>(choice, false, true);
+                    }
+                    else
+                    {
+                        result[i] = new ButtonContext<TChoice>(choice, false, false);
+                    }
+                }
+            }
+
+            return result;
+        }
+
+        #endregion Buttons
 
         #region DialogSettings
 

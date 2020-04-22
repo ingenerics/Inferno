@@ -69,8 +69,7 @@ namespace Inferno
         /// <summary>
         /// Override to configure the framework and setup your IoC container.
         /// </summary>
-        protected virtual IDependencyResolver Configure()
-            => new DefaultDependencyResolver();
+        protected abstract IDependencyResolver Configure();
 
         /// <summary>
         /// Hydrate Attached Property helpers.

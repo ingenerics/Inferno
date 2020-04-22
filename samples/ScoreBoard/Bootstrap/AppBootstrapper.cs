@@ -1,10 +1,10 @@
 ﻿using Inferno;
 using Inferno.Core;
 using Inferno.Core.Logging;
+using Inferno.Wpf.Shared.IconManagement.Octicons;
 using SimpleInjector;
 using System.Reactive.Concurrency;
 using System.Windows;
-using Inferno.Wpf.Shared.IconManagement.Octicons;
 
 namespace ScoreBoard.Bootstrap
 {
@@ -44,7 +44,7 @@ namespace ScoreBoard.Bootstrap
             container.Collection.Register<IBindingTypeConverter>(new EqualityTypeConverter(logger), new StringConverter(), new ComponentModelTypeConverter(), new BooleanToVisibilityTypeConverter());
             container.Collection.Register<ISetMethodBindingConverter>(new NullSetMethodBindingConverter());
             container.Collection.Register<IPropertyBindingHook>(new NullObjectBindingHook());
-            container.Collection.Register<ISinkForViewFetcher>(new SinkForLoadedViewFetcher(), new SinkForActivatedViewFetcher(new SinkForLoadedViewFetcher()));
+            container.Collection.Register<ILoadedForViewFetcher>(new LoadedForViewFetcher());
             container.RegisterInstance<IDependencyResolver>(dependencyResolver); // Used by IViewLocator to resolve views
             //    Components that are not covered by unit tests
             container.RegisterInstance(_application);

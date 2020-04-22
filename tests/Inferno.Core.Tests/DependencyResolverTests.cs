@@ -13,9 +13,9 @@ namespace Inferno.Core.Tests
             // Arrange
             var dependencyResolver = new FakeDependencyResolverCore();
             // Act
-            var collection = dependencyResolver.GetInstance<ILogger>();
+            var instance = dependencyResolver.GetInstance<ILogger>();
             // Assert
-            Assert.NotNull(collection);
+            Assert.NotNull(instance);
         }
 
         [Fact]
@@ -24,9 +24,9 @@ namespace Inferno.Core.Tests
             // Arrange
             var dependencyResolver = new FakeDependencyResolverCore();
             // Act
-            var collection = dependencyResolver.GetInstance(typeof(ILogger));
+            var instance = dependencyResolver.GetInstance(typeof(ILogger));
             // Assert
-            Assert.NotNull(collection);
+            Assert.NotNull(instance);
         }
 
         [Fact]
@@ -36,9 +36,9 @@ namespace Inferno.Core.Tests
             var dependencyResolver = new FakeDependencyResolverCore();
             dependencyResolver.RegisterTransient<IList>(() => new List<int>());
             // Act
-            var list = dependencyResolver.GetInstance<IList>();
+            var instance = dependencyResolver.GetInstance<IList>();
             // Assert
-            Assert.NotNull(list);
+            Assert.NotNull(instance);
         }
 
         [Fact]
@@ -48,9 +48,9 @@ namespace Inferno.Core.Tests
             var dependencyResolver = new FakeDependencyResolverCore();
             dependencyResolver.RegisterTransient<IList>(() => new List<int>());
             // Act
-            var list = dependencyResolver.GetInstance(typeof(IList));
+            var instance = dependencyResolver.GetInstance(typeof(IList));
             // Assert
-            Assert.NotNull(list);
+            Assert.NotNull(instance);
         }
     }
 }

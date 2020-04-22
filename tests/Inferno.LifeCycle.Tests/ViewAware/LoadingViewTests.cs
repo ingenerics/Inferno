@@ -8,7 +8,7 @@ namespace Inferno.LifeCycle.Tests
         public LoadingViewTests()
         {
             var dependencyResolver = new FakeDependencyResolverLifeCycle();
-            dependencyResolver.ReplaceSingletons<ISinkForViewFetcher>(new SinkForLoadedViewFetcher(), new SinkForActivatedViewFetcher(new SinkForLoadedViewFetcher()), new TestSinkForViewFetcher());
+            dependencyResolver.ReplaceSingletons<ILoadedForViewFetcher>(new TestLoadedForViewFetcher());
             RxApp.Initialize(dependencyResolver);
             RxLifeCycle.Initialize(dependencyResolver);
         }
@@ -30,6 +30,8 @@ namespace Inferno.LifeCycle.Tests
             fixture.Unloaded.OnNext(Unit.Default);
             Assert.Equal(0, vm.IsLoadedCount);
             Assert.Equal(0, fixture.IsLoadedCount);
+
+            fixture.Dispose();
         }
 
         [StaFact]
@@ -48,6 +50,8 @@ namespace Inferno.LifeCycle.Tests
 
             fixture.ViewModel = null;
             Assert.Equal(0, vm.IsLoadedCount);
+
+            fixture.Dispose();
         }
 
         [StaFact]
@@ -70,6 +74,8 @@ namespace Inferno.LifeCycle.Tests
             fixture.ViewModel = newVm;
             Assert.Equal(0, vm.IsLoadedCount);
             Assert.Equal(1, newVm.IsLoadedCount);
+
+            fixture.Dispose();
         }
 
         [StaFact]
@@ -91,6 +97,8 @@ namespace Inferno.LifeCycle.Tests
             fixture.Unloaded.OnNext(Unit.Default);
             Assert.Equal(0, fixture.IsLoadedCount);
             Assert.Equal(0, vm.IsLoadedCount);
+
+            fixture.Dispose();
         }
 
         [StaFact]
@@ -114,6 +122,8 @@ namespace Inferno.LifeCycle.Tests
             fixture.Loaded.OnNext(Unit.Default);
             Assert.Equal(1, vm.IsLoadedCount);
             Assert.Equal(1, fixture.IsLoadedCount);
+
+            fixture.Dispose();
         }
     }
 }

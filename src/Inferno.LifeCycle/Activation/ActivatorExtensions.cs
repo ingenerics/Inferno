@@ -155,7 +155,7 @@ namespace Inferno
         /// <param name="initialValue"></param>
         /// <returns>A disposable.</returns>
         public static IObservable<T> WhenInitializedSwitch<T>(this IActivate item, IObservable<T> source, T initialValue)
-            => item.Activator.IsInitialized
+            => item.Activator.HasInitialized
                 .Select(isInitialized => isInitialized ? source : Observable.Return(initialValue))
                 .Switch();
 
@@ -170,7 +170,7 @@ namespace Inferno
         /// <param name="fallbackValue"></param>
         /// <returns>A disposable.</returns>
         public static IObservable<T> WhenActivatedSwitch<T>(this IActivate item, IObservable<T> source, T fallbackValue)
-            => item.Activator.IsActive
+            => item.Activator.HasActivated
                 .Select(isActivated => isActivated ? source : Observable.Return(fallbackValue))
                 .Switch();
     }

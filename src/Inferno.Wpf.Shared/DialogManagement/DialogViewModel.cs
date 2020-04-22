@@ -10,6 +10,8 @@ namespace Inferno
     {
         private readonly Action<ButtonContext<TChoice>> _buttonHandler;
 
+        public DialogViewModel(string title, IScreen viewModel, TChoice[] choices, DialogType dialogType = DialogType.None, Action<ButtonContext<TChoice>> buttonHandler = null) :
+            this (title, viewModel, DialogManager.ConvertToButtons(choices), dialogType, buttonHandler) { }
         public DialogViewModel(string title, IScreen viewModel, IEnumerable<ButtonContext<TChoice>> buttons, DialogType dialogType = DialogType.None, Action<ButtonContext<TChoice>> buttonHandler = null)
         {
             if (viewModel == null || buttons == null) throw new ArgumentNullException();

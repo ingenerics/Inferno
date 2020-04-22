@@ -4,6 +4,7 @@ using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Reflection;
+using Xunit;
 
 namespace Inferno.LifeCycle.Tests
 {
@@ -34,7 +35,7 @@ namespace Inferno.LifeCycle.Tests
             RegisterSingletons<IBindingTypeConverter>(new EqualityTypeConverter(_logger), new StringConverter(), new ComponentModelTypeConverter(), new BooleanToVisibilityTypeConverter());
             RegisterSingletons<ISetMethodBindingConverter>(new NullSetMethodBindingConverter());
             RegisterSingletons<IPropertyBindingHook>(new NullObjectBindingHook());
-            RegisterSingletons<ISinkForViewFetcher>(new SinkForLoadedViewFetcher(), new SinkForActivatedViewFetcher(new SinkForLoadedViewFetcher()));
+            RegisterSingletons<ILoadedForViewFetcher>(new LoadedForViewFetcher());
         }
 
         public void RegisterSingleton<TService>(TService instance)

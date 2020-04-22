@@ -7,6 +7,7 @@
     xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
     xmlns:inferno="http://inferno.net"
     xmlns:viewModels="clr-namespace:ScoreBoard.ViewModels"
+    xmlns:views="clr-namespace:ScoreBoard.Views"
     mc:Ignorable="d"
     d:DesignHeight="300" d:DesignWidth="300">
     <DockPanel LastChildFill="True" Background="{DynamicResource AccentColorBrush}">
@@ -23,8 +24,8 @@
                 <ColumnDefinition />
                 <ColumnDefinition />
             </Grid.ColumnDefinitions>
-            <inferno:CompositionControl x:Name="ScoreHomeTeam" Grid.Column="0" />
-            <inferno:CompositionControl x:Name="ScoreVisitors" Grid.Column="1" />
+            <views:ScoreView x:Name="ScoreHomeTeam" Grid.Column="0" />
+            <views:ScoreView x:Name="ScoreVisitors" Grid.Column="1" />
         </Grid>
     </DockPanel>
 </inferno:RxUserControl>

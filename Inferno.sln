@@ -55,7 +55,9 @@ Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "0_Testing", "0_Testing", "{
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Inferno.Testing", "tests\Inferno.Testing\Inferno.Testing.csproj", "{6872BB4D-DC98-40F2-A360-BEC18A79BFBD}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Inferno.Wpf.Metro", "src\Inferno.Wpf.Metro\Inferno.Wpf.Metro.csproj", "{586A3B7E-0E65-43EF-8C40-540E960DD3D5}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Inferno.Wpf.Metro", "src\Inferno.Wpf.Metro\Inferno.Wpf.Metro.csproj", "{586A3B7E-0E65-43EF-8C40-540E960DD3D5}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "WorldCup", "samples\WorldCup\WorldCup.csproj", "{82DCE7D4-2529-42AF-BC6E-477894AF4FCD}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
@@ -113,6 +115,10 @@ Global
 		{586A3B7E-0E65-43EF-8C40-540E960DD3D5}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{586A3B7E-0E65-43EF-8C40-540E960DD3D5}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{586A3B7E-0E65-43EF-8C40-540E960DD3D5}.Release|Any CPU.Build.0 = Release|Any CPU
+		{82DCE7D4-2529-42AF-BC6E-477894AF4FCD}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{82DCE7D4-2529-42AF-BC6E-477894AF4FCD}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{82DCE7D4-2529-42AF-BC6E-477894AF4FCD}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{82DCE7D4-2529-42AF-BC6E-477894AF4FCD}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
@@ -141,6 +147,7 @@ Global
 		{27444B12-9754-4D47-B809-C489EE544E0C} = {8517E241-7B1E-430F-A5D4-A1F0F6B78721}
 		{6872BB4D-DC98-40F2-A360-BEC18A79BFBD} = {27444B12-9754-4D47-B809-C489EE544E0C}
 		{586A3B7E-0E65-43EF-8C40-540E960DD3D5} = {ABB264BE-9586-4EB1-9EEE-02C09E47839A}
+		{82DCE7D4-2529-42AF-BC6E-477894AF4FCD} = {DCA36042-10EB-40AB-ADB7-A8B85E48E5C0}
 	EndGlobalSection
 	GlobalSection(ExtensibilityGlobals) = postSolution
 		SolutionGuid = {73E0DAB5-4A71-45DE-8E0E-DF2E5522C655}

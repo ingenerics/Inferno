@@ -1,5 +1,4 @@
-﻿using System.ComponentModel;
-using System.Threading;
+﻿using System.Threading;
 using System.Threading.Tasks;
 
 namespace Inferno
@@ -42,8 +41,8 @@ namespace Inferno
         {
             await ScreenExtensions.TryDeactivateAsync(_activeItem, closePrevious, cancellationToken);
 
-            _activeItem = newItem = EnsureItem(newItem);
-            ((IReactiveObject)this).RaisePropertyChanged(new PropertyChangedEventArgs(nameof(ActiveItem)));
+            EnsureItem(newItem);
+            this.RaiseAndSetIfChanged(ref _activeItem, newItem, nameof(ActiveItem));
 
             if (IsActive)
             {

@@ -18,6 +18,8 @@ namespace Inferno
             var closeable = new List<T>();
             var closeCanOccur = true;
 
+            if (toClose.Length == 0) return new CloseResult<T>(closeCanOccur, closeable);
+
             var indexLast = toClose.Length - 1;
 
             do

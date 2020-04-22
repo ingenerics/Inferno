@@ -34,7 +34,7 @@ namespace Inferno.Wpf.Tests
             RegisterSingletons<IBindingTypeConverter>(new EqualityTypeConverter(_logger), new StringConverter(), new ComponentModelTypeConverter(), new BooleanToVisibilityTypeConverter());
             RegisterSingletons<ISetMethodBindingConverter>(new NullSetMethodBindingConverter());
             RegisterSingletons<IPropertyBindingHook>(new NullObjectBindingHook());
-            RegisterSingletons<ISinkForViewFetcher>(new SinkForLoadedViewFetcher(), new SinkForActivatedViewFetcher(new SinkForLoadedViewFetcher()));
+            RegisterSingletons<ILoadedForViewFetcher>(new LoadedForViewFetcher());
         }
 
         public void RegisterSingleton<TService>(TService instance)

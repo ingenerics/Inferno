@@ -39,7 +39,7 @@ namespace Inferno
      *   -- RxApp functions as the gathering ground for all the reactive specific configurations.
      *   -- We still have a way to intercept, i.e. perform actions before calling RxApp.Initialize.
      *      In contrast to the approach taken by the ReactiveUI designers who trusted the initialization
-     *      of components to static constructors.
+     *      of components to their static constructors.
      */
     public static class RxApp
     {
@@ -118,6 +118,7 @@ namespace Inferno
 
             #region Configuration of static classes and shared state
 
+            IEnableLoggerExtensions.Initialize(_logger);
             ReactiveLoggerExtensions.Initialize(_logger);
             IReactiveObjectExtensions.Initialize(_logger);
 

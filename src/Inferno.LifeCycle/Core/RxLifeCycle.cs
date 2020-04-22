@@ -18,10 +18,8 @@ namespace Inferno
 
             #region Configuration of static classes and shared state
 
-            Screen.Logger = _logger;
-
-            var sinkForViewFetchers = _dependencyResolver.GetAllInstances<ISinkForViewFetcher>();
-            ViewAwareExtensions.Initialize(sinkForViewFetchers);
+            var loadedForViewFetchers = _dependencyResolver.GetAllInstances<ILoadedForViewFetcher>();
+            ViewAwareExtensions.Initialize(_logger, loadedForViewFetchers);
 
             #endregion Configuration of static classes and shared state
         }
