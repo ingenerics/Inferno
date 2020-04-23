@@ -39,9 +39,16 @@ Inferno targets LOB applications and requires knowledge of the frameworks it is 
 
 
 
-## License
+## Licenses
 
- Inferno is distributed under the [MIT License](http://opensource.org/licenses/MIT).
+Caliburn-Micro is licensed under the MIT license. 
+See the [LICENSE file](https://github.com/Caliburn-Micro/Caliburn.Micro/blob/master/License.txt) in the Caliburn-Micro project root for full license information.
+
+The Dotnet Foundation uses various licenses. See documentation in project files. 
+This repo made changes to Dotnet Foundation licensed files. The license remains the same as the original file from the Dotnet Foundation project.
+See the [LICENSE file](https://github.com/reactiveui/ReactiveUI/blob/master/LICENSE) in the ReactiveUI project root for full license information.
+
+All other files are licensed under the [MIT License](http://opensource.org/licenses/MIT).
 
 
 
